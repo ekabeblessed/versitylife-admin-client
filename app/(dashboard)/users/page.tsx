@@ -1,0 +1,325 @@
+"use client";
+
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { usersApi } from "@/lib/api/users-api";
+import { useCurrentUser } from "@/stores/authStore";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+} from "@/components/ui/dialog";
+import { toast } from "sonner";
+import { Plus, Search, Loader2, Users, LogOut } from "lucide-react";
+import { format, formatDistanceToNow } from "date-fns";
+
+export default function UsersPage() {
+  const queryClient = useQueryClient();
+  const currentUser = useCurrentUser();
+  const [search, setSearch] = useState("");
+  const [showCreate, setShowCreate] = useState(false);
+
+  const [newUser, setNewUser] = useState({
+    email: "",
+    username: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+    role: "platform_viewer",
+  });
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["platform-users", search],
+    queryFn: () => usersApi.list({ search: search || undefined }),
+  });
+
+  const { data: activityData, isLoading: activityLoading } = useQuery({
+    queryKey: ["user-activity"],
+    queryFn: () => usersApi.getActivity(),
+    enabled: currentUser?.role === "platform_superadmin",
+  });
+
+  const createMutation = useMutation({
+    mutationFn: () => usersApi.create(newUser),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["platform-users"] });
+      toast.success("User created");
+      setShowCreate(false);
+      setNewUser({ email: "", username: "", password: "", firstName: "", lastName: "", role: "platform_viewer" });
+    },
+    onError: (err: any) => {
+      toast.error("Failed to create user", { description: err.data?.message || err.message });
+    },
+  });
+
+  const forceLogoutMutation = useMutation({
+    mutationFn: (userId: string) => usersApi.forceLogout(userId),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["user-activity"] });
+      toast.success(data.message);
+    },
+    onError: (err: any) => {
+      toast.error("Failed to force logout", { description: err.data?.message || err.message });
+    },
+  });
+
+  const users = data?.users || [];
+  const activityUsers = activityData?.users || [];
+  const isSuperadmin = currentUser?.role === "platform_superadmin";
+
+  const roleColors: Record<string, "default" | "info" | "secondary"> = {
+    platform_superadmin: "default",
+    platform_admin: "info",
+    platform_viewer: "secondary",
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold">Platform Users</h1>
+          <p className="text-muted-foreground">
+            Manage users who can access this admin panel
+          </p>
+        </div>
+        {isSuperadmin && (
+          <Button onClick={() => setShowCreate(true)}>
+            <Plus className="h-4 w-4 mr-2" />
+            Add User
+          </Button>
+        )}
+      </div>
+
+      <Tabs defaultValue="users">
+        <TabsList>
+          <TabsTrigger value="users">Users</TabsTrigger>
+          {isSuperadmin && <TabsTrigger value="activity">Activity</TabsTrigger>}
+        </TabsList>
+
+        <TabsContent value="users" className="space-y-4">
+          <div className="relative max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search users..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-9"
+            />
+          </div>
+
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            </div>
+          ) : users.length === 0 ? (
+            <Card>
+              <CardContent className="flex flex-col items-center justify-center py-12">
+                <Users className="h-12 w-12 text-muted-foreground mb-4" />
+                <p className="text-lg font-medium">No users found</p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="rounded-md border">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b bg-muted/50">
+                    <th className="h-12 px-4 text-left font-medium">Name</th>
+                    <th className="h-12 px-4 text-left font-medium">Email</th>
+                    <th className="h-12 px-4 text-left font-medium">Role</th>
+                    <th className="h-12 px-4 text-left font-medium">Status</th>
+                    <th className="h-12 px-4 text-left font-medium">2FA</th>
+                    <th className="h-12 px-4 text-left font-medium">Last Login</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.map((user) => (
+                    <tr key={user._id} className="border-b hover:bg-muted/25">
+                      <td className="px-4 py-3 font-medium">
+                        {user.firstName} {user.lastName}
+                      </td>
+                      <td className="px-4 py-3 text-muted-foreground">{user.email}</td>
+                      <td className="px-4 py-3">
+                        <Badge variant={roleColors[user.role] || "secondary"}>
+                          {user.role.replace(/platform_/g, "").replace(/_/g, " ")}
+                        </Badge>
+                      </td>
+                      <td className="px-4 py-3">
+                        <Badge variant={user.status === "active" ? "success" : "secondary"}>
+                          {user.status}
+                        </Badge>
+                      </td>
+                      <td className="px-4 py-3">
+                        {user.twoFactorEnabled ? (
+                          <Badge variant="success">Enabled</Badge>
+                        ) : (
+                          <Badge variant="secondary">Off</Badge>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-muted-foreground">
+                        {user.lastLogin ? format(new Date(user.lastLogin), "PPp") : "Never"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </TabsContent>
+
+        {isSuperadmin && (
+          <TabsContent value="activity" className="space-y-4">
+            {activityLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              </div>
+            ) : activityUsers.length === 0 ? (
+              <Card>
+                <CardContent className="flex flex-col items-center justify-center py-12">
+                  <Users className="h-12 w-12 text-muted-foreground mb-4" />
+                  <p className="text-lg font-medium">No activity data</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="rounded-md border">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b bg-muted/50">
+                      <th className="h-12 px-4 text-left font-medium">Name</th>
+                      <th className="h-12 px-4 text-left font-medium">Email</th>
+                      <th className="h-12 px-4 text-left font-medium">Role</th>
+                      <th className="h-12 px-4 text-left font-medium">Status</th>
+                      <th className="h-12 px-4 text-left font-medium">Last Login</th>
+                      <th className="h-12 px-4 text-left font-medium">Last Activity</th>
+                      <th className="h-12 px-4 text-left font-medium">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {activityUsers.map((user) => (
+                      <tr key={user._id} className="border-b hover:bg-muted/25">
+                        <td className="px-4 py-3 font-medium">
+                          {user.firstName} {user.lastName}
+                        </td>
+                        <td className="px-4 py-3 text-muted-foreground">{user.email}</td>
+                        <td className="px-4 py-3">
+                          <Badge variant={roleColors[user.role] || "secondary"}>
+                            {user.role.replace(/platform_/g, "").replace(/_/g, " ")}
+                          </Badge>
+                        </td>
+                        <td className="px-4 py-3">
+                          <Badge variant={user.status === "active" ? "success" : "secondary"}>
+                            {user.status}
+                          </Badge>
+                        </td>
+                        <td className="px-4 py-3 text-muted-foreground">
+                          {user.lastLogin
+                            ? formatDistanceToNow(new Date(user.lastLogin), { addSuffix: true })
+                            : "Never"}
+                        </td>
+                        <td className="px-4 py-3 text-muted-foreground">
+                          {user.lastActivity
+                            ? formatDistanceToNow(new Date(user.lastActivity), { addSuffix: true })
+                            : "Never"}
+                        </td>
+                        <td className="px-4 py-3">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-destructive hover:text-destructive"
+                            onClick={() => forceLogoutMutation.mutate(user._id)}
+                            disabled={forceLogoutMutation.isPending || user._id === currentUser?._id}
+                          >
+                            <LogOut className="h-3 w-3 mr-1" />
+                            Force Logout
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </TabsContent>
+        )}
+      </Tabs>
+
+      <Dialog open={showCreate} onOpenChange={setShowCreate}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add Platform User</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>First Name</Label>
+                <Input
+                  value={newUser.firstName}
+                  onChange={(e) => setNewUser((p) => ({ ...p, firstName: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Last Name</Label>
+                <Input
+                  value={newUser.lastName}
+                  onChange={(e) => setNewUser((p) => ({ ...p, lastName: e.target.value }))}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Email</Label>
+              <Input
+                type="email"
+                value={newUser.email}
+                onChange={(e) => setNewUser((p) => ({ ...p, email: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Username</Label>
+              <Input
+                value={newUser.username}
+                onChange={(e) => setNewUser((p) => ({ ...p, username: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Password</Label>
+              <Input
+                type="password"
+                value={newUser.password}
+                onChange={(e) => setNewUser((p) => ({ ...p, password: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Role</Label>
+              <Select
+                value={newUser.role}
+                onValueChange={(v) => setNewUser((p) => ({ ...p, role: v }))}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="platform_superadmin">Superadmin</SelectItem>
+                  <SelectItem value="platform_admin">Admin</SelectItem>
+                  <SelectItem value="platform_viewer">Viewer</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowCreate(false)}>
+              Cancel
+            </Button>
+            <Button onClick={() => createMutation.mutate()} disabled={createMutation.isPending}>
+              {createMutation.isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              Create User
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}

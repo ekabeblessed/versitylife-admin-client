@@ -145,10 +145,8 @@ export default function PartnersPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Partner Registry</h1>
-          <p className="text-muted-foreground">
-            Manage university partner institutions connected to the platform
-          </p>
+          <h1 className="text-xl font-bold text-white tracking-tight">Partner Registry</h1>
+          <p className="text-sm text-slate-400 mt-0.5">Manage university partner institutions connected to the platform</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={handleHealthCheck} disabled={healthCheck.isPending}>
@@ -196,36 +194,37 @@ export default function PartnersPage() {
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-16">
-          <Spinner className="h-8 w-8 animate-spin text-muted-foreground" />
+        <div className="flex flex-col items-center justify-center py-16">
+          <Spinner className="h-8 w-8 animate-spin text-goldenYellow-400" />
+          <p className="text-sm text-slate-500 mt-2">Loading partners...</p>
         </div>
       ) : partners.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <Handshake className="h-12 w-12 text-muted-foreground mb-4" />
-            <p className="text-lg font-medium">No partners found</p>
-            <p className="text-muted-foreground text-sm">
-              {search || statusFilter ? "Try adjusting your filters." : "Add your first partner institution."}
-            </p>
-          </CardContent>
-        </Card>
+        <div className="flex flex-col items-center justify-center py-16 text-center border border-slate-800 rounded-xl bg-slate-900">
+          <div className="w-16 h-16 rounded-2xl bg-slate-800/80 border border-slate-700 flex items-center justify-center mx-auto mb-5">
+            <Handshake className="h-8 w-8 text-slate-500" />
+          </div>
+          <p className="text-base font-semibold text-white mb-1">No partners found</p>
+          <p className="text-sm text-slate-400 max-w-xs">
+            {search || statusFilter ? "Try adjusting your filters." : "Add your first partner institution."}
+          </p>
+        </div>
       ) : (
-        <div className="rounded-md border overflow-x-auto">
+        <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b bg-muted/50">
-                <th className="h-10 px-4 text-left font-medium">Partner</th>
-                <th className="h-10 px-4 text-left font-medium">Code</th>
-                <th className="h-10 px-4 text-left font-medium">API URL</th>
-                <th className="h-10 px-4 text-left font-medium">Status</th>
-                <th className="h-10 px-4 text-left font-medium">Health</th>
-                <th className="h-10 px-4 text-left font-medium">Features</th>
-                <th className="h-10 px-4 text-left font-medium">Actions</th>
+              <tr className="border-b border-slate-800 bg-slate-800/50">
+                <th className="h-10 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Partner</th>
+                <th className="h-10 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Code</th>
+                <th className="h-10 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">API URL</th>
+                <th className="h-10 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Status</th>
+                <th className="h-10 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Health</th>
+                <th className="h-10 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Features</th>
+                <th className="h-10 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Actions</th>
               </tr>
             </thead>
             <tbody>
               {partners.map((partner) => (
-                <tr key={partner._id} className="border-b hover:bg-muted/25 transition-colors">
+                <tr key={partner._id} className="border-b border-slate-800 hover:bg-slate-800/50 transition-colors duration-100">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       {partner.logo ? (
@@ -244,9 +243,9 @@ export default function PartnersPage() {
                         </div>
                       )}
                       <div>
-                        <p className="font-medium">{partner.name}</p>
+                        <p className="font-medium text-white">{partner.name}</p>
                         {partner.shortName && (
-                          <p className="text-xs text-muted-foreground">{partner.shortName}</p>
+                          <p className="text-xs text-slate-400">{partner.shortName}</p>
                         )}
                       </div>
                     </div>
@@ -526,6 +525,15 @@ function PartnerFormDialog({
                 value={form.city}
                 onChange={(e) => set("city", e.target.value)}
                 placeholder="Buea"
+              />
+            </div>
+            <div className="col-span-2 space-y-2">
+              <Label htmlFor="p-motto">Motto</Label>
+              <Input
+                id="p-motto"
+                value={form.motto}
+                onChange={(e) => set("motto", e.target.value)}
+                placeholder="Knowledge for Development"
               />
             </div>
           </div>

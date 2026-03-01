@@ -11,6 +11,7 @@ export interface Tenant {
     code: string;
     country: string;
     timezone: string;
+    logo?: string;
     contactEmail?: string;
     contactPhone?: string;
   };
@@ -206,6 +207,7 @@ export interface CreateTenantInput {
     code: string;
     country: string;
     timezone: string;
+    logo?: string;
     contactEmail?: string;
     contactPhone?: string;
   };

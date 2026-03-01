@@ -36,6 +36,7 @@ export default function NewTenantPage() {
       code: "",
       country: "",
       timezone: "Africa/Douala",
+      logo: "",
     },
     deployment: { region: "europe-west1" },
     resources: { cpu: "1", memory: "512Mi" },
@@ -305,8 +306,11 @@ export default function NewTenantPage() {
               <div className="space-y-2">
                 <Label>Logo URL</Label>
                 <Input
-                  value={form.environment?.INSTITUTION_LOGO_URL || ""}
-                  onChange={(e) => updateForm("environment.INSTITUTION_LOGO_URL", e.target.value)}
+                  value={form.university.logo || ""}
+                  onChange={(e) => {
+                    updateForm("university.logo", e.target.value);
+                    updateForm("environment.INSTITUTION_LOGO_URL", e.target.value);
+                  }}
                   placeholder="https://example.com/logo.png"
                 />
               </div>

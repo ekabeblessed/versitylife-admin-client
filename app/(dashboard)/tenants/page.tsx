@@ -73,8 +73,8 @@ export default function TenantsPage() {
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Tenants</h1>
-          <p className="text-slate-400 mt-1">
+          <h1 className="text-xl font-bold text-white tracking-tight">Tenants</h1>
+          <p className="text-sm text-slate-400 mt-0.5">
             Manage all university tenants across the platform
           </p>
         </div>
@@ -122,8 +122,8 @@ export default function TenantsPage() {
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-slate-400 text-sm font-medium">Total Tenants</p>
-              <p className="text-2xl font-bold text-white mt-1">{stats.total}</p>
+              <p className="text-slate-400 text-xs font-medium uppercase tracking-wide mb-1">Total Tenants</p>
+              <p className="text-2xl font-bold text-white tabular-nums">{stats.total}</p>
             </div>
             <div className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center">
               <Buildings weight="bold" className="h-5 w-5 text-goldenYellow-400" />
@@ -133,8 +133,8 @@ export default function TenantsPage() {
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-slate-400 text-sm font-medium">Active</p>
-              <p className="text-2xl font-bold text-emerald-400 mt-1">{stats.active}</p>
+              <p className="text-slate-400 text-xs font-medium uppercase tracking-wide mb-1">Active</p>
+              <p className="text-2xl font-bold text-emerald-400 tabular-nums">{stats.active}</p>
             </div>
             <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
               <Heartbeat weight="fill" className="h-5 w-5 text-emerald-400" />
@@ -144,8 +144,8 @@ export default function TenantsPage() {
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-slate-400 text-sm font-medium">Provisioning</p>
-              <p className="text-2xl font-bold text-blue-400 mt-1">{stats.provisioning}</p>
+              <p className="text-slate-400 text-xs font-medium uppercase tracking-wide mb-1">Provisioning</p>
+              <p className="text-2xl font-bold text-blue-400 tabular-nums">{stats.provisioning}</p>
             </div>
             <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
               <Spinner className="h-5 w-5 text-blue-400 animate-spin" />
@@ -155,8 +155,8 @@ export default function TenantsPage() {
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-slate-400 text-sm font-medium">Errors</p>
-              <p className="text-2xl font-bold text-red-400 mt-1">{stats.error}</p>
+              <p className="text-slate-400 text-xs font-medium uppercase tracking-wide mb-1">Errors</p>
+              <p className="text-2xl font-bold text-red-400 tabular-nums">{stats.error}</p>
             </div>
             <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center">
               <Rocket weight="fill" className="h-5 w-5 text-red-400" />
@@ -215,16 +215,17 @@ export default function TenantsPage() {
 
       {/* Table */}
       {isLoading ? (
-        <div className="flex items-center justify-center py-16">
-          <Spinner className="h-8 w-8 animate-spin text-goldenYellow-500" />
+        <div className="flex flex-col items-center justify-center py-16">
+          <Spinner className="h-8 w-8 animate-spin text-goldenYellow-400" />
+          <p className="text-sm text-slate-500 mt-2">Loading tenants...</p>
         </div>
       ) : tenants.length === 0 ? (
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-12 text-center">
-          <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 rounded-2xl bg-slate-800/80 border border-slate-700 flex items-center justify-center mx-auto mb-5">
             <Buildings className="h-8 w-8 text-slate-500" />
           </div>
-          <p className="text-lg font-medium text-white">No tenants found</p>
-          <p className="text-slate-400 mt-1">Get started by adding a university.</p>
+          <p className="text-base font-semibold text-white mb-1">No tenants found</p>
+          <p className="text-sm text-slate-400 max-w-xs mx-auto">Get started by adding a university tenant.</p>
         </div>
       ) : (
         <>
@@ -233,22 +234,37 @@ export default function TenantsPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-800 bg-slate-800/50">
-                  <th className="h-12 px-5 text-left font-semibold text-slate-300">University</th>
-                  <th className="h-12 px-5 text-left font-semibold text-slate-300">Tenant ID</th>
-                  <th className="h-12 px-5 text-left font-semibold text-slate-300">Country</th>
-                  <th className="h-12 px-5 text-left font-semibold text-slate-300">Status</th>
-                  <th className="h-12 px-5 text-left font-semibold text-slate-300">Health</th>
-                  <th className="h-12 px-5 text-left font-semibold text-slate-300">Billing</th>
-                  <th className="h-12 px-5 text-left font-semibold text-slate-300">Created</th>
-                  <th className="h-12 px-5 text-left font-semibold text-slate-300">Actions</th>
+                  <th className="h-12 px-5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">University</th>
+                  <th className="h-12 px-5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Tenant ID</th>
+                  <th className="h-12 px-5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Country</th>
+                  <th className="h-12 px-5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Status</th>
+                  <th className="h-12 px-5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Health</th>
+                  <th className="h-12 px-5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Billing</th>
+                  <th className="h-12 px-5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Created</th>
+                  <th className="h-12 px-5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {tenants.map((tenant) => (
-                  <tr key={tenant._id} className="border-b border-slate-800 hover:bg-slate-800/30 transition-colors">
+                  <tr key={tenant._id} className="border-b border-slate-800 hover:bg-slate-800/50 transition-colors duration-100">
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-goldenYellow-400 to-goldenYellow-600 flex items-center justify-center text-slate-900 font-bold text-sm">
+                        {tenant.university.logo ? (
+                          <img
+                            src={tenant.university.logo}
+                            alt={tenant.university.name}
+                            className="w-9 h-9 rounded-lg object-contain bg-white p-0.5"
+                            onError={(e) => {
+                              const el = e.currentTarget;
+                              el.style.display = 'none';
+                              el.nextElementSibling?.removeAttribute('style');
+                            }}
+                          />
+                        ) : null}
+                        <div
+                          className="w-9 h-9 rounded-lg bg-gradient-to-br from-goldenYellow-400 to-goldenYellow-600 flex items-center justify-center text-slate-900 font-bold text-sm"
+                          style={tenant.university.logo ? { display: 'none' } : undefined}
+                        >
                           {tenant.university.name.charAt(0)}
                         </div>
                         <div>

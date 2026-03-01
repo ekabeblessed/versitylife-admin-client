@@ -48,6 +48,13 @@ export function TenantConfigTab({ tenant }: TenantConfigTabProps) {
     maxInstances: tenant.scaling.maxInstances,
   });
 
+  // University details state
+  const [universityDetails, setUniversityDetails] = useState({
+    logo: tenant.university.logo || "",
+    contactEmail: tenant.university.contactEmail || "",
+    contactPhone: tenant.university.contactPhone || "",
+  });
+
   // Custom env vars state
   const [customEnvVars, setCustomEnvVars] = useState<{ key: string; value: string }[]>([]);
 
@@ -69,6 +76,11 @@ export function TenantConfigTab({ tenant }: TenantConfigTabProps) {
 
     setResources({ cpu: tenant.resources.cpu, memory: tenant.resources.memory });
     setScaling({ minInstances: tenant.scaling.minInstances, maxInstances: tenant.scaling.maxInstances });
+    setUniversityDetails({
+      logo: tenant.university.logo || "",
+      contactEmail: tenant.university.contactEmail || "",
+      contactPhone: tenant.university.contactPhone || "",
+    });
   }, [tenant]);
 
   const handleSave = async () => {
@@ -84,6 +96,7 @@ export function TenantConfigTab({ tenant }: TenantConfigTabProps) {
       await updateTenant.mutateAsync({
         tenantId: tenant.tenantId,
         data: {
+          university: universityDetails,
           environment,
           resources,
           scaling,
@@ -107,6 +120,7 @@ export function TenantConfigTab({ tenant }: TenantConfigTabProps) {
       await updateTenant.mutateAsync({
         tenantId: tenant.tenantId,
         data: {
+          university: universityDetails,
           environment,
           resources,
           scaling,
@@ -132,6 +146,58 @@ export function TenantConfigTab({ tenant }: TenantConfigTabProps) {
 
   return (
     <div className="space-y-6">
+      {/* University Details */}
+      <Card>
+        <CardHeader>
+          <CardTitle>University Details</CardTitle>
+          <CardDescription>Logo and contact information shown in the platform.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 sm:items-center">
+            <Label className="text-sm font-medium">Logo URL</Label>
+            <div className="col-span-2 flex items-center gap-3">
+              <Input
+                value={universityDetails.logo}
+                onChange={(e) => setUniversityDetails((p) => ({ ...p, logo: e.target.value }))}
+                placeholder="https://example.com/logo.png"
+                className="font-mono text-sm"
+              />
+              {universityDetails.logo && (
+                <img
+                  src={universityDetails.logo}
+                  alt="Logo preview"
+                  className="h-9 w-9 rounded-lg object-contain bg-white p-0.5 shrink-0 border border-slate-700"
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                />
+              )}
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 sm:items-center">
+            <Label className="text-sm font-medium">Contact Email</Label>
+            <div className="col-span-2">
+              <Input
+                type="email"
+                value={universityDetails.contactEmail}
+                onChange={(e) => setUniversityDetails((p) => ({ ...p, contactEmail: e.target.value }))}
+                placeholder="admin@university.edu"
+                className="font-mono text-sm"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 sm:items-center">
+            <Label className="text-sm font-medium">Contact Phone</Label>
+            <div className="col-span-2">
+              <Input
+                value={universityDetails.contactPhone}
+                onChange={(e) => setUniversityDetails((p) => ({ ...p, contactPhone: e.target.value }))}
+                placeholder="+237 6XX XXX XXX"
+                className="font-mono text-sm"
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Frontend URLs */}
       <Card>
         <CardHeader>

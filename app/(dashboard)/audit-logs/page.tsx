@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Loader2, ScrollText, ChevronDown, ChevronRight } from "lucide-react";
+import { Spinner, Scroll, CaretDown, CaretRight } from "@phosphor-icons/react";
 import { format } from "date-fns";
 import type { AuditLog } from "@/types/audit-log";
 
@@ -129,17 +129,17 @@ export default function AuditLogsPage() {
 
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          <Spinner className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
       ) : logs.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 border rounded-md">
-          <ScrollText className="h-12 w-12 text-muted-foreground mb-4" />
+          <Scroll className="h-12 w-12 text-muted-foreground mb-4" />
           <p className="text-lg font-medium">No audit logs found</p>
           <p className="text-muted-foreground">Try adjusting your filters.</p>
         </div>
       ) : (
         <>
-          <div className="rounded-md border">
+          <div className="rounded-md border overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b bg-muted/50">
@@ -166,7 +166,7 @@ export default function AuditLogsPage() {
           </div>
 
           {pagination && pagination.pages > 1 && (
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-4">
               <p className="text-sm text-muted-foreground">
                 Showing {logs.length} of {pagination.total} logs
               </p>
@@ -215,7 +215,7 @@ function LogRow({
       >
         <td className="px-2 text-muted-foreground">
           {hasDetails && (
-            expanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />
+            expanded ? <CaretDown className="h-4 w-4" /> : <CaretRight className="h-4 w-4" />
           )}
         </td>
         <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">

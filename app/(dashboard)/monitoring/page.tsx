@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
-import { Loader2, HeartPulse, Activity, Clock, Wifi } from "lucide-react";
+import { Spinner, Heartbeat, Waveform, Clock, WifiHigh } from "@phosphor-icons/react";
 import { format, formatDistanceToNow } from "date-fns";
 
 function getStatusColor(status: string) {
@@ -59,14 +59,14 @@ function HealthHistoryModal({
 
         {isLoading ? (
           <div className="flex items-center justify-center py-8">
-            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+            <Spinner className="h-6 w-6 animate-spin text-muted-foreground" />
           </div>
         ) : history.length === 0 ? (
           <p className="text-center text-muted-foreground py-8">
             No health check history in the last 24 hours.
           </p>
         ) : (
-          <div className="rounded-md border">
+          <div className="rounded-md border overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b bg-muted/50">
@@ -116,7 +116,7 @@ export default function MonitoringPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">Health Monitoring</h1>
           <p className="text-muted-foreground">
@@ -128,9 +128,9 @@ export default function MonitoringPage() {
           disabled={batchHealth.isPending}
         >
           {batchHealth.isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            <Spinner className="h-4 w-4 animate-spin mr-2" />
           ) : (
-            <HeartPulse className="h-4 w-4 mr-2" />
+            <Heartbeat className="h-4 w-4 mr-2" />
           )}
           Run Health Check
         </Button>
@@ -138,12 +138,12 @@ export default function MonitoringPage() {
 
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          <Spinner className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
       ) : summary.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <HeartPulse className="h-12 w-12 text-muted-foreground mb-4" />
+            <Heartbeat className="h-12 w-12 text-muted-foreground mb-4" />
             <p className="text-lg font-medium">No active tenants</p>
             <p className="text-muted-foreground">Health monitoring data will appear for active tenants.</p>
           </CardContent>
@@ -178,7 +178,7 @@ export default function MonitoringPage() {
                 <div className="grid grid-cols-3 gap-3 text-center">
                   <div>
                     <div className="flex items-center justify-center mb-1">
-                      <Activity className="h-3 w-3 text-muted-foreground" />
+                      <Waveform className="h-3 w-3 text-muted-foreground" />
                     </div>
                     <p className="text-lg font-semibold">
                       {item.uptimePercent !== null ? `${item.uptimePercent}%` : "-"}
@@ -196,7 +196,7 @@ export default function MonitoringPage() {
                   </div>
                   <div>
                     <div className="flex items-center justify-center mb-1">
-                      <Wifi className="h-3 w-3 text-muted-foreground" />
+                      <WifiHigh className="h-3 w-3 text-muted-foreground" />
                     </div>
                     <p className="text-lg font-semibold">{item.checksCount}</p>
                     <p className="text-xs text-muted-foreground">Checks (24h)</p>

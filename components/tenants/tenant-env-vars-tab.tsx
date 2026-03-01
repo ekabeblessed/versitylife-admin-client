@@ -12,9 +12,9 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import {
-  Loader2, Search, ChevronDown, ChevronRight, Save, Rocket,
-  AlertTriangle, RotateCcw,
-} from "lucide-react";
+  Spinner, MagnifyingGlass, CaretDown, CaretRight, FloppyDisk, Rocket,
+  Warning, ArrowClockwise, ArrowCounterClockwise,
+} from "@phosphor-icons/react";
 import {
   categorizeLiveEnvVars, getCategoryLabel, CATEGORY_ORDER,
 } from "@/lib/env-var-categories";
@@ -109,7 +109,7 @@ export function TenantEnvVarsTab({ tenant }: { tenant: Tenant }) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <Spinner className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -118,7 +118,7 @@ export function TenantEnvVarsTab({ tenant }: { tenant: Tenant }) {
     return (
       <Card>
         <CardContent className="py-12 text-center text-muted-foreground">
-          <AlertTriangle className="h-8 w-8 mx-auto mb-3 text-amber-500" />
+          <Warning className="h-8 w-8 mx-auto mb-3 text-amber-500" />
           <p className="font-medium">Service not deployed or Cloud Run unreachable</p>
           <p className="text-sm mt-1">
             {fetchError
@@ -134,7 +134,7 @@ export function TenantEnvVarsTab({ tenant }: { tenant: Tenant }) {
     <div className="space-y-4">
       {diffCount > 0 && (
         <div className="flex items-center gap-2 rounded-md border border-amber-200 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-800 px-4 py-3 text-sm">
-          <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" />
+          <Warning className="h-4 w-4 text-amber-600 shrink-0" />
           <span>
             <strong>{diffCount}</strong> env var(s) differ between Cloud Run (live) and MongoDB
             (stored overrides). These will sync on next deploy.
@@ -144,7 +144,7 @@ export function TenantEnvVarsTab({ tenant }: { tenant: Tenant }) {
 
       <div className="flex items-center gap-3 flex-wrap">
         <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search by key or value..."
             value={search}
@@ -169,13 +169,13 @@ export function TenantEnvVarsTab({ tenant }: { tenant: Tenant }) {
       </div>
 
       {hasEdits && (
-        <div className="flex items-center gap-2 justify-end">
+        <div className="flex flex-wrap items-center gap-2 justify-end">
           <Button
             variant="outline"
             size="sm"
             onClick={() => setEdits({})}
           >
-            <RotateCcw className="h-3 w-3 mr-1" />
+            <ArrowClockwise className="h-3 w-3 mr-1" />
             Discard ({Object.keys(edits).length})
           </Button>
           <Button
@@ -184,7 +184,7 @@ export function TenantEnvVarsTab({ tenant }: { tenant: Tenant }) {
             onClick={() => handleSave(false)}
             disabled={updateTenant.isPending}
           >
-            <Save className="h-3 w-3 mr-1" />
+            <FloppyDisk className="h-3 w-3 mr-1" />
             Save to MongoDB
           </Button>
           <Button
@@ -193,7 +193,7 @@ export function TenantEnvVarsTab({ tenant }: { tenant: Tenant }) {
             disabled={updateTenant.isPending || deploy.isPending}
           >
             {(updateTenant.isPending || deploy.isPending) && (
-              <Loader2 className="h-3 w-3 animate-spin mr-1" />
+              <Spinner className="h-3 w-3 animate-spin mr-1" />
             )}
             <Rocket className="h-3 w-3 mr-1" />
             Save & Deploy
@@ -213,9 +213,9 @@ export function TenantEnvVarsTab({ tenant }: { tenant: Tenant }) {
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm flex items-center gap-2">
                     {isOpen ? (
-                      <ChevronDown className="h-4 w-4" />
+                      <CaretDown className="h-4 w-4" />
                     ) : (
-                      <ChevronRight className="h-4 w-4" />
+                      <CaretRight className="h-4 w-4" />
                     )}
                     {getCategoryLabel(category)}
                   </CardTitle>
@@ -226,7 +226,7 @@ export function TenantEnvVarsTab({ tenant }: { tenant: Tenant }) {
               </CardHeader>
               {isOpen && (
                 <CardContent className="pt-0">
-                  <div className="rounded-md border">
+                  <div className="rounded-md border overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b bg-muted/50">
@@ -276,7 +276,7 @@ export function TenantEnvVarsTab({ tenant }: { tenant: Tenant }) {
                                     className="h-7 px-2 text-xs"
                                     onClick={() => handleReset(v.key)}
                                   >
-                                    <RotateCcw className="h-3 w-3" />
+                                    <ArrowCounterClockwise className="h-3 w-3" />
                                   </Button>
                                 )}
                               </td>

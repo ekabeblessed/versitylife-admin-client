@@ -45,27 +45,27 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import {
-  Database,
+  HardDrives,
   Download,
   HardDrive,
-  Loader2,
-  MoreHorizontal,
+  Spinner,
+  DotsThree,
   Play,
-  RotateCcw,
+  ArrowClockwise,
   Shield,
-  ShieldAlert,
-  Trash2,
+  ShieldWarning,
+  Trash,
   Calendar,
   Clock,
   Copy,
   CheckCircle,
   XCircle,
-  ChevronDown,
-  ChevronUp,
+  CaretDown,
+  CaretUp,
   Pause,
-  AlertTriangle,
-  HeartPulse,
-} from "lucide-react";
+  Warning,
+  Heartbeat,
+} from "@phosphor-icons/react";
 import { format, formatDistanceToNow } from "date-fns";
 
 interface TenantBackupsTabProps {
@@ -307,7 +307,7 @@ export function TenantBackupsTab({ tenant }: TenantBackupsTabProps) {
   if (backupsLoading || statusLoading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <Spinner className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -326,7 +326,7 @@ export function TenantBackupsTab({ tenant }: TenantBackupsTabProps) {
         <Card className={isBackupUnhealthy ? "border-red-300" : ""}>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <HeartPulse className="h-4 w-4" />
+              <Heartbeat className="h-4 w-4" />
               Backup Health
             </CardTitle>
             {isBackupUnhealthy ? (
@@ -338,7 +338,7 @@ export function TenantBackupsTab({ tenant }: TenantBackupsTabProps) {
           <CardContent className="space-y-2 text-sm">
             {isBackupUnhealthy && (
               <div className="flex items-center gap-2 rounded-md border border-red-200 bg-red-50 dark:bg-red-950/20 dark:border-red-800 px-3 py-2 text-red-700 dark:text-red-400">
-                <AlertTriangle className="h-4 w-4 shrink-0" />
+                <Warning className="h-4 w-4 shrink-0" />
                 <span>
                   {!healthData.lastBackupAt
                     ? "No backups found in GCS."
@@ -415,7 +415,7 @@ export function TenantBackupsTab({ tenant }: TenantBackupsTabProps) {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Total Backups</CardTitle>
-            <Database className="h-4 w-4 text-muted-foreground" />
+            <HardDrives className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{status?.totalBackups || 0}</p>
@@ -478,7 +478,7 @@ export function TenantBackupsTab({ tenant }: TenantBackupsTabProps) {
               disabled={triggerBackup.isPending}
             >
               {triggerBackup.isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                <Spinner className="h-4 w-4 animate-spin mr-2" />
               ) : (
                 <Play className="h-4 w-4 mr-2" />
               )}
@@ -490,7 +490,7 @@ export function TenantBackupsTab({ tenant }: TenantBackupsTabProps) {
               onClick={handleRestoreLatest}
               disabled={backups.length === 0 || triggerRestore.isPending}
             >
-              <RotateCcw className="h-4 w-4 mr-2" />
+              <ArrowClockwise className="h-4 w-4 mr-2" />
               Restore Latest
             </Button>
 
@@ -499,7 +499,7 @@ export function TenantBackupsTab({ tenant }: TenantBackupsTabProps) {
               onClick={() => setEmergencyDialog(true)}
               disabled={backups.length === 0}
             >
-              <ShieldAlert className="h-4 w-4 mr-2" />
+              <ShieldWarning className="h-4 w-4 mr-2" />
               Emergency Restore
             </Button>
 
@@ -529,9 +529,9 @@ export function TenantBackupsTab({ tenant }: TenantBackupsTabProps) {
           <div className="flex items-center justify-between">
             <CardTitle className="text-base">Backup Schedule Settings</CardTitle>
             {scheduleOpen ? (
-              <ChevronUp className="h-4 w-4" />
+              <CaretUp className="h-4 w-4" />
             ) : (
-              <ChevronDown className="h-4 w-4" />
+              <CaretDown className="h-4 w-4" />
             )}
           </div>
         </CardHeader>
@@ -568,7 +568,7 @@ export function TenantBackupsTab({ tenant }: TenantBackupsTabProps) {
                 size="sm"
               >
                 {updateSchedule.isPending && (
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  <Spinner className="h-4 w-4 animate-spin mr-2" />
                 )}
                 Update Schedule
               </Button>
@@ -626,7 +626,7 @@ export function TenantBackupsTab({ tenant }: TenantBackupsTabProps) {
               No backups found
             </p>
           ) : (
-            <div className="rounded-md border">
+            <div className="rounded-md border overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b bg-muted/50">
@@ -662,7 +662,7 @@ export function TenantBackupsTab({ tenant }: TenantBackupsTabProps) {
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon">
-                              <MoreHorizontal className="h-4 w-4" />
+                              <DotsThree className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
@@ -675,7 +675,7 @@ export function TenantBackupsTab({ tenant }: TenantBackupsTabProps) {
                                 })
                               }
                             >
-                              <RotateCcw className="h-4 w-4 mr-2" />
+                              <ArrowClockwise className="h-4 w-4 mr-2" />
                               Restore
                             </DropdownMenuItem>
                             <DropdownMenuItem
@@ -709,7 +709,7 @@ export function TenantBackupsTab({ tenant }: TenantBackupsTabProps) {
                                 setDeleteDialog({ open: true, backup })
                               }
                             >
-                              <Trash2 className="h-4 w-4 mr-2" />
+                              <Trash className="h-4 w-4 mr-2" />
                               Delete
                             </DropdownMenuItem>
                           </DropdownMenuContent>
@@ -791,7 +791,7 @@ export function TenantBackupsTab({ tenant }: TenantBackupsTabProps) {
               disabled={triggerRestore.isPending}
             >
               {triggerRestore.isPending && (
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                <Spinner className="h-4 w-4 animate-spin mr-2" />
               )}
               Restore
             </Button>
@@ -833,7 +833,7 @@ export function TenantBackupsTab({ tenant }: TenantBackupsTabProps) {
               disabled={triggerRestore.isPending}
             >
               {triggerRestore.isPending && (
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                <Spinner className="h-4 w-4 animate-spin mr-2" />
               )}
               Emergency Restore
             </Button>
@@ -864,7 +864,7 @@ export function TenantBackupsTab({ tenant }: TenantBackupsTabProps) {
               disabled={triggerRestoreRollback.isPending}
             >
               {triggerRestoreRollback.isPending && (
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                <Spinner className="h-4 w-4 animate-spin mr-2" />
               )}
               Rollback
             </Button>
@@ -911,7 +911,7 @@ export function TenantBackupsTab({ tenant }: TenantBackupsTabProps) {
               disabled={deleteBackup.isPending}
             >
               {deleteBackup.isPending && (
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                <Spinner className="h-4 w-4 animate-spin mr-2" />
               )}
               Delete
             </Button>
@@ -974,7 +974,7 @@ export function TenantBackupsTab({ tenant }: TenantBackupsTabProps) {
               disabled={triggerClone.isPending || !cloneDialog.targetUri}
             >
               {triggerClone.isPending && (
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                <Spinner className="h-4 w-4 animate-spin mr-2" />
               )}
               Clone
             </Button>
@@ -1006,7 +1006,7 @@ export function TenantBackupsTab({ tenant }: TenantBackupsTabProps) {
           </DialogHeader>
           {verifyDialog.loading ? (
             <div className="flex items-center justify-center py-8">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+<Spinner className="h-8 w-8 animate-spin text-muted-foreground" />
               <p className="ml-3 text-sm text-muted-foreground">
                 Verifying backup integrity...
               </p>

@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Loader2, ShieldCheck, Key, Plus, Trash2, Globe, Save } from "lucide-react";
+import { Spinner, ShieldCheck, Key, Plus, Trash, Globe, FloppyDisk } from "@phosphor-icons/react";
 
 export default function SettingsPage() {
   const user = useCurrentUser();
@@ -122,7 +122,7 @@ export default function SettingsPage() {
               <Input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
             </div>
             <Button type="submit" disabled={loading}>
-              {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              {loading && <Spinner className="h-4 w-4 animate-spin mr-2" />}
               Change Password
             </Button>
           </form>
@@ -167,7 +167,7 @@ export default function SettingsPage() {
             </div>
           ) : (
             <Button onClick={handleSetup2FA} disabled={setup2FALoading} variant="outline">
-              {setup2FALoading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              {setup2FALoading && <Spinner className="h-4 w-4 animate-spin mr-2" />}
               Set Up 2FA
             </Button>
           )}
@@ -225,7 +225,7 @@ function GlobalEnvSection() {
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <CardTitle className="flex items-center gap-2">
               <Globe className="h-5 w-5" />
@@ -244,7 +244,7 @@ function GlobalEnvSection() {
       <CardContent className="space-y-4">
         {isLoading ? (
           <div className="flex justify-center py-4">
-            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+            <Spinner className="h-6 w-6 animate-spin text-muted-foreground" />
           </div>
         ) : envVars.length === 0 ? (
           <p className="text-sm text-muted-foreground">
@@ -280,7 +280,7 @@ function GlobalEnvSection() {
                   onClick={() => removeVar(index)}
                   className="text-destructive hover:text-destructive"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash className="h-4 w-4" />
                 </Button>
               </div>
             ))}
@@ -292,9 +292,9 @@ function GlobalEnvSection() {
             <div className="flex justify-end">
               <Button onClick={handleSave} disabled={updateGlobalEnv.isPending}>
                 {updateGlobalEnv.isPending ? (
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  <Spinner className="h-4 w-4 animate-spin mr-2" />
                 ) : (
-                  <Save className="h-4 w-4 mr-2" />
+                  <FloppyDisk className="h-4 w-4 mr-2" />
                 )}
                 Save Global Variables
               </Button>

@@ -11,7 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { useDiscoverTenants, useImportTenant } from "@/hooks/use-tenants";
 import { toast } from "sonner";
-import { ArrowLeft, ArrowRight, Check, Loader2, Radio, RefreshCw, Globe } from "lucide-react";
+import { CaretLeft, CaretRight, Check, Spinner, RadioButton, ArrowClockwise, Globe } from "@phosphor-icons/react";
 import type { ImportTenantInput, DiscoveredService } from "@/types/tenant";
 import { formatDistanceToNow } from "date-fns";
 
@@ -95,7 +95,7 @@ export default function ImportTenantPage() {
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={() => router.back()}>
-          <ArrowLeft className="h-4 w-4" />
+          <CaretLeft className="h-4 w-4" />
         </Button>
         <div>
           <h1 className="text-2xl font-bold">Import Existing Tenant</h1>
@@ -112,7 +112,7 @@ export default function ImportTenantPage() {
           {/* Step 1: Discover */}
           {step === 0 && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                   <CardTitle className="text-lg">Cloud Run Services</CardTitle>
                   <p className="text-sm text-muted-foreground mt-1">
@@ -120,14 +120,14 @@ export default function ImportTenantPage() {
                   </p>
                 </div>
                 <Button variant="outline" size="sm" onClick={() => refetch()} disabled={discovering}>
-                  <RefreshCw className={`h-4 w-4 mr-2 ${discovering ? "animate-spin" : ""}`} />
+                  <ArrowClockwise className={`h-4 w-4 mr-2 ${discovering ? "animate-spin" : ""}`} />
                   Refresh
                 </Button>
               </div>
 
               {discovering ? (
                 <div className="flex items-center justify-center py-12">
-                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                  <Spinner className="h-8 w-8 animate-spin text-muted-foreground" />
                 </div>
               ) : services.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -140,7 +140,7 @@ export default function ImportTenantPage() {
                 </div>
               ) : (
                 <>
-                  <div className="rounded-md border">
+                  <div className="rounded-md border overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b bg-muted/50">
@@ -163,7 +163,7 @@ export default function ImportTenantPage() {
                             onClick={() => selectService(svc)}
                           >
                             <td className="px-4 py-3">
-                              <Radio
+                              <RadioButton
                                 className={`h-4 w-4 ${
                                   selectedService?.serviceName === svc.serviceName
                                     ? "text-deepBlue-600"
@@ -218,7 +218,7 @@ export default function ImportTenantPage() {
           {/* Step 2: University Details */}
           {step === 1 && (
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>University Name *</Label>
                   <Input
@@ -236,7 +236,7 @@ export default function ImportTenantPage() {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>University Code *</Label>
                   <Input
@@ -255,7 +255,7 @@ export default function ImportTenantPage() {
                   <p className="text-xs text-muted-foreground">Lowercase letters, numbers, and hyphens only</p>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Country *</Label>
                   <Input
@@ -283,7 +283,7 @@ export default function ImportTenantPage() {
                   </Select>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Contact Email</Label>
                   <Input
@@ -309,7 +309,7 @@ export default function ImportTenantPage() {
                 <Label>Service Name</Label>
                 <Input value={form.serviceName} disabled className="bg-muted" />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Region</Label>
                   <Select
@@ -328,7 +328,7 @@ export default function ImportTenantPage() {
                   </Select>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>CPU</Label>
                   <Select
@@ -363,7 +363,7 @@ export default function ImportTenantPage() {
                   </Select>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Min Instances</Label>
                   <Input
@@ -438,7 +438,7 @@ export default function ImportTenantPage() {
           onClick={() => setStep((s) => s - 1)}
           disabled={step === 0}
         >
-          <ArrowLeft className="h-4 w-4 mr-2" />
+          <CaretLeft className="h-4 w-4 mr-2" />
           Back
         </Button>
 
@@ -448,7 +448,7 @@ export default function ImportTenantPage() {
             disabled={step === 0 ? !canProceedFromStep0 : !canProceedFromStep1}
           >
             Next
-            <ArrowRight className="h-4 w-4 ml-2" />
+            <CaretRight className="h-4 w-4 ml-2" />
           </Button>
         ) : (
           <Button
@@ -457,7 +457,7 @@ export default function ImportTenantPage() {
             className="bg-deepBlue-600 hover:bg-deepBlue-700"
           >
             {importTenant.isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              <Spinner className="h-4 w-4 animate-spin mr-2" />
             ) : (
               <Check className="h-4 w-4 mr-2" />
             )}

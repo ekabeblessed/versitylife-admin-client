@@ -13,9 +13,9 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import {
-  Loader2, CreditCard, Save, AlertTriangle, CheckCircle2,
-  Clock, Ban, FlaskConical, Mail,
-} from "lucide-react";
+  Spinner, CreditCard, FloppyDisk, Warning, CheckCircle,
+  Clock, Prohibit, Flask, Envelope,
+} from "@phosphor-icons/react";
 import { toast } from "sonner";
 import { format, parseISO } from "date-fns";
 import type { Tenant, SubscriptionStatus } from "@/types/tenant";
@@ -25,28 +25,28 @@ function SubscriptionStatusBadge({ status }: { status: SubscriptionStatus }) {
     case "trial":
       return (
         <Badge variant="secondary" className="gap-1 bg-purple-100 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300">
-          <FlaskConical className="h-3 w-3" />
+          <Flask className="h-3 w-3" />
           Free Trial
         </Badge>
       );
     case "trial_expiring":
       return (
         <Badge variant="warning" className="gap-1">
-          <FlaskConical className="h-3 w-3" />
+          <Flask className="h-3 w-3" />
           Trial Expiring
         </Badge>
       );
     case "trial_expired":
       return (
         <Badge variant="destructive" className="gap-1">
-          <AlertTriangle className="h-3 w-3" />
+          <Warning className="h-3 w-3" />
           Trial Expired
         </Badge>
       );
     case "active":
       return (
         <Badge variant="success" className="gap-1">
-          <CheckCircle2 className="h-3 w-3" />
+          <CheckCircle className="h-3 w-3" />
           Active
         </Badge>
       );
@@ -60,14 +60,14 @@ function SubscriptionStatusBadge({ status }: { status: SubscriptionStatus }) {
     case "expired":
       return (
         <Badge variant="destructive" className="gap-1">
-          <AlertTriangle className="h-3 w-3" />
+          <Warning className="h-3 w-3" />
           Expired
         </Badge>
       );
     default:
       return (
         <Badge variant="secondary" className="gap-1">
-          <Ban className="h-3 w-3" />
+          <Prohibit className="h-3 w-3" />
           Not Set
         </Badge>
       );
@@ -215,7 +215,7 @@ export function TenantBillingTab({ tenant }: { tenant: Tenant }) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        <Spinner className="h-6 w-6 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -226,10 +226,10 @@ export function TenantBillingTab({ tenant }: { tenant: Tenant }) {
       {subscription && (
         <Card>
           <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 {subscription.billingCycle === "free_trial" ? (
-                  <FlaskConical className="h-8 w-8 text-purple-500" />
+                  <Flask className="h-8 w-8 text-purple-500" />
                 ) : (
                   <CreditCard className="h-8 w-8 text-muted-foreground" />
                 )}
@@ -263,7 +263,7 @@ export function TenantBillingTab({ tenant }: { tenant: Tenant }) {
 
             {(subscription.status === "expired" || subscription.status === "trial_expired") && (
               <div className="mt-4 flex items-center gap-2 rounded-md bg-destructive/10 border border-destructive/20 px-3 py-2 text-sm text-destructive">
-                <AlertTriangle className="h-4 w-4 shrink-0" />
+                <Warning className="h-4 w-4 shrink-0" />
                 {subscription.status === "trial_expired"
                   ? "Free trial has ended. Set up a paid plan to continue."
                   : "Subscription has expired. Please update the end date."}
@@ -277,13 +277,13 @@ export function TenantBillingTab({ tenant }: { tenant: Tenant }) {
             )}
             {subscription.status === "trial_expiring" && (
               <div className="mt-4 flex items-center gap-2 rounded-md bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 px-3 py-2 text-sm text-amber-800 dark:text-amber-300">
-                <FlaskConical className="h-4 w-4 shrink-0" />
+                <Flask className="h-4 w-4 shrink-0" />
                 Free trial ends in {subscription.daysLeft} day{subscription.daysLeft === 1 ? "" : "s"}. Set up a paid plan.
               </div>
             )}
 
             {/* Billing alert actions */}
-            <div className="mt-4 flex items-center justify-between">
+            <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="text-xs text-muted-foreground">
                 {subscription.billingAlerts && subscription.billingAlerts.length > 0 ? (
                   (() => {
@@ -307,9 +307,9 @@ export function TenantBillingTab({ tenant }: { tenant: Tenant }) {
                 title={!tenant.university.contactEmail ? "No contact email configured" : "Send billing reminder email"}
               >
                 {sendReminder.isPending ? (
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  <Spinner className="h-4 w-4 animate-spin mr-2" />
                 ) : (
-                  <Mail className="h-4 w-4 mr-2" />
+                  <Envelope className="h-4 w-4 mr-2" />
                 )}
                 Send Reminder Email
               </Button>
@@ -347,7 +347,7 @@ export function TenantBillingTab({ tenant }: { tenant: Tenant }) {
                       : "border-input bg-background hover:bg-muted"
                   }`}
                 >
-                  {value === "free_trial" && <FlaskConical className="h-3.5 w-3.5 inline mr-1.5" />}
+                  {value === "free_trial" && <Flask className="h-3.5 w-3.5 inline mr-1.5" />}
                   {label}
                 </button>
               ))}
@@ -478,9 +478,9 @@ export function TenantBillingTab({ tenant }: { tenant: Tenant }) {
               disabled={!isDirty || updateBilling.isPending}
             >
               {updateBilling.isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                <Spinner className="h-4 w-4 animate-spin mr-2" />
               ) : (
-                <Save className="h-4 w-4 mr-2" />
+                <FloppyDisk className="h-4 w-4 mr-2" />
               )}
               Save Changes
             </Button>

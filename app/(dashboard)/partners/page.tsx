@@ -24,9 +24,9 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import {
-  Plus, Search, Loader2, ExternalLink, HeartPulse, Pencil, Trash2,
-  ToggleLeft, ToggleRight, Handshake, CheckCircle2, XCircle, AlertTriangle,
-} from "lucide-react";
+  Plus, MagnifyingGlass, Spinner, ArrowSquareOut, Heartbeat, Pencil, Trash,
+  ToggleLeft, ToggleRight, Handshake, CheckCircle, XCircle, Warning,
+} from "@phosphor-icons/react";
 import { toast } from "sonner";
 import type { Partner, PartnerInput } from "@/types/partner";
 
@@ -45,7 +45,7 @@ function PartnerStatusBadge({ status }: { status: Partner["status"] }) {
 
 function HealthDot({ healthy }: { healthy: boolean }) {
   return healthy ? (
-    <CheckCircle2 className="h-4 w-4 text-green-500" />
+    <CheckCircle className="h-4 w-4 text-green-500" />
   ) : (
     <XCircle className="h-4 w-4 text-red-500" />
   );
@@ -143,7 +143,7 @@ export default function PartnersPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">Partner Registry</h1>
           <p className="text-muted-foreground">
@@ -153,9 +153,9 @@ export default function PartnersPage() {
         <div className="flex gap-2">
           <Button variant="outline" onClick={handleHealthCheck} disabled={healthCheck.isPending}>
             {healthCheck.isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              <Spinner className="h-4 w-4 animate-spin mr-2" />
             ) : (
-              <HeartPulse className="h-4 w-4 mr-2" />
+              <Heartbeat className="h-4 w-4 mr-2" />
             )}
             Health Check
           </Button>
@@ -170,7 +170,7 @@ export default function PartnersPage() {
 
       <div className="flex gap-4">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search partners..."
             value={search}
@@ -197,7 +197,7 @@ export default function PartnersPage() {
 
       {isLoading ? (
         <div className="flex items-center justify-center py-16">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          <Spinner className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
       ) : partners.length === 0 ? (
         <Card>
@@ -210,7 +210,7 @@ export default function PartnersPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="rounded-md border">
+        <div className="rounded-md border overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b bg-muted/50">
@@ -262,7 +262,7 @@ export default function PartnersPage() {
                         rel="noopener noreferrer"
                         className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
                       >
-                        <ExternalLink className="h-3 w-3 shrink-0" />
+                        <ArrowSquareOut className="h-3 w-3 shrink-0" />
                         <span className="truncate max-w-[160px]">{partner.apiUrl}</span>
                       </a>
                     ) : (
@@ -320,7 +320,7 @@ export default function PartnersPage() {
                           className="text-destructive hover:text-destructive"
                           title="Delete"
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Trash className="h-4 w-4" />
                         </Button>
                       )}
                     </div>
@@ -365,9 +365,9 @@ export default function PartnersPage() {
               onClick={handleDelete}
             >
               {deletePartner.isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                <Spinner className="h-4 w-4 animate-spin mr-2" />
               ) : (
-                <Trash2 className="h-4 w-4 mr-2" />
+                <Trash className="h-4 w-4 mr-2" />
               )}
               Delete
             </AlertDialogAction>
@@ -480,7 +480,7 @@ function PartnerFormDialog({
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic info */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="col-span-2 space-y-2">
               <Label htmlFor="p-name">Name *</Label>
               <Input
@@ -566,7 +566,7 @@ function PartnerFormDialog({
           <Separator />
 
           {/* Branding */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="p-primary">Primary Color</Label>
               <div className="flex gap-2">
@@ -608,7 +608,7 @@ function PartnerFormDialog({
           {/* Features */}
           <div className="space-y-3">
             <Label>Features</Label>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {(
                 [
                   { key: "courseRegistration", label: "Course Registration" },
@@ -633,7 +633,7 @@ function PartnerFormDialog({
           <Separator />
 
           {/* Status & order */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="p-status">Status</Label>
               <Select
@@ -664,7 +664,7 @@ function PartnerFormDialog({
           </div>
 
           {/* Support */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="p-support-email">Support Email</Label>
               <Input
@@ -691,7 +691,7 @@ function PartnerFormDialog({
               Cancel
             </Button>
             <Button type="submit" disabled={isSaving}>
-              {isSaving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+              {isSaving ? <Spinner className="h-4 w-4 animate-spin mr-2" /> : null}
               {partner ? "Save Changes" : "Create Partner"}
             </Button>
           </DialogFooter>

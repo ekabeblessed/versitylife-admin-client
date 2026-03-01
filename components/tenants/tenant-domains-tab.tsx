@@ -11,7 +11,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Loader2, Plus, Trash2, RefreshCw, Globe } from "lucide-react";
+import { Spinner, Plus, Trash, ArrowClockwise, Globe } from "@phosphor-icons/react";
 import { format } from "date-fns";
 import type { Tenant } from "@/types/tenant";
 
@@ -73,14 +73,14 @@ export function TenantDomainsTab({ tenant }: { tenant: Tenant }) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <Spinner className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     );
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <h3 className="text-lg font-medium">Custom Domains</h3>
         <Button size="sm" onClick={() => setShowAdd(true)}>
           <Plus className="h-4 w-4 mr-1" />
@@ -101,8 +101,8 @@ export function TenantDomainsTab({ tenant }: { tenant: Tenant }) {
           {domains.map((d) => (
             <Card key={d._id || d.domain}>
               <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex flex-wrap items-center gap-3">
                     <CardTitle className="text-base">{d.domain}</CardTitle>
                     <Badge variant={getStatusVariant(d.status)}>
                       {d.status.replace(/_/g, " ")}
@@ -125,7 +125,7 @@ export function TenantDomainsTab({ tenant }: { tenant: Tenant }) {
                         onClick={() => handleVerify(d.domain)}
                         disabled={verifyDomain.isPending}
                       >
-                        <RefreshCw className="h-3 w-3 mr-1" />
+                        <ArrowClockwise className="h-3 w-3 mr-1" />
                         Verify
                       </Button>
                     )}
@@ -137,7 +137,7 @@ export function TenantDomainsTab({ tenant }: { tenant: Tenant }) {
                         onClick={() => handleRemove(d.domain)}
                         disabled={removeDomain.isPending}
                       >
-                        <Trash2 className="h-3 w-3" />
+                        <Trash className="h-3 w-3" />
                       </Button>
                     )}
                   </div>
@@ -146,7 +146,7 @@ export function TenantDomainsTab({ tenant }: { tenant: Tenant }) {
               {d.dnsRecords.length > 0 && (
                 <CardContent>
                   <p className="text-sm font-medium mb-2">DNS Records to configure:</p>
-                  <div className="rounded-md border">
+                  <div className="rounded-md border overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b bg-muted/50">
@@ -198,7 +198,7 @@ export function TenantDomainsTab({ tenant }: { tenant: Tenant }) {
               Cancel
             </Button>
             <Button onClick={handleAdd} disabled={!newDomain.trim() || addDomain.isPending}>
-              {addDomain.isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              {addDomain.isPending && <Spinner className="h-4 w-4 animate-spin mr-2" />}
               Add Domain
             </Button>
           </DialogFooter>

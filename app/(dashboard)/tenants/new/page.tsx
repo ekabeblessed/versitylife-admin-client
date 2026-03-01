@@ -11,7 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { useCreateTenant } from "@/hooks/use-tenants";
 import { toast } from "sonner";
-import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
+import { CaretLeft, CaretRight, Check, Spinner } from "@phosphor-icons/react";
 import type { CreateTenantInput } from "@/types/tenant";
 
 const STEPS = [
@@ -83,7 +83,7 @@ export default function NewTenantPage() {
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={() => router.back()}>
-          <ArrowLeft className="h-4 w-4" />
+          <CaretLeft className="h-4 w-4" />
         </Button>
         <div>
           <h1 className="text-2xl font-bold">Add University</h1>
@@ -100,7 +100,7 @@ export default function NewTenantPage() {
           {/* Step 1: University Info */}
           {step === 0 && (
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>University Name *</Label>
                   <Input
@@ -118,7 +118,7 @@ export default function NewTenantPage() {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>University Code *</Label>
                   <Input
@@ -139,7 +139,7 @@ export default function NewTenantPage() {
                   </p>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Country *</Label>
                   <Input
@@ -167,7 +167,7 @@ export default function NewTenantPage() {
                   </Select>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Contact Email</Label>
                   <Input
@@ -194,7 +194,7 @@ export default function NewTenantPage() {
               <p className="text-sm text-muted-foreground">
                 These details populate the tenant&apos;s institution profile. All fields have sensible defaults and can be updated later.
               </p>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Institution Motto</Label>
                   <Input
@@ -220,7 +220,7 @@ export default function NewTenantPage() {
                   placeholder="Leading institution in higher education"
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Established Year</Label>
                   <Input
@@ -248,7 +248,7 @@ export default function NewTenantPage() {
               </div>
               <Separator />
               <p className="text-sm font-medium">Department Emails</p>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>General Email</Label>
                   <Input
@@ -266,7 +266,7 @@ export default function NewTenantPage() {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Registrar Email</Label>
                   <Input
@@ -284,7 +284,7 @@ export default function NewTenantPage() {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Admissions Email</Label>
                   <Input
@@ -316,7 +316,7 @@ export default function NewTenantPage() {
           {/* Step 3: Resources */}
           {step === 2 && (
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Region</Label>
                   <Select
@@ -336,7 +336,7 @@ export default function NewTenantPage() {
                 </div>
               </div>
               <Separator />
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>CPU</Label>
                   <Select
@@ -371,7 +371,7 @@ export default function NewTenantPage() {
                   </Select>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Min Instances</Label>
                   <Input
@@ -410,7 +410,7 @@ export default function NewTenantPage() {
               <p className="text-sm text-muted-foreground">
                 JWT and CRON secrets are auto-generated. Optional integrations below:
               </p>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>SES From Email</Label>
                   <Input
@@ -428,7 +428,7 @@ export default function NewTenantPage() {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>AWS Access Key ID</Label>
                   <Input
@@ -446,7 +446,7 @@ export default function NewTenantPage() {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>AWS Region</Label>
                   <Input
@@ -471,7 +471,7 @@ export default function NewTenantPage() {
               <p className="text-sm text-muted-foreground">
                 This will be the first super_admin user for the university.
               </p>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>First Name *</Label>
                   <Input
@@ -509,7 +509,7 @@ export default function NewTenantPage() {
               <p className="text-sm text-muted-foreground">
                 Frontend URLs — the Staff URL is used as the login link in the welcome email. You can update these later in the Configuration tab.
               </p>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Staff Dashboard URL</Label>
                   <Input
@@ -527,7 +527,7 @@ export default function NewTenantPage() {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Applicant Portal URL</Label>
                   <Input
@@ -545,7 +545,7 @@ export default function NewTenantPage() {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Frontend URL</Label>
                   <Input
@@ -637,14 +637,14 @@ export default function NewTenantPage() {
           onClick={() => setStep((s) => s - 1)}
           disabled={step === 0}
         >
-          <ArrowLeft className="h-4 w-4 mr-2" />
+          <CaretLeft className="h-4 w-4 mr-2" />
           Back
         </Button>
 
         {step < STEPS.length - 1 ? (
           <Button onClick={() => setStep((s) => s + 1)}>
             Next
-            <ArrowRight className="h-4 w-4 ml-2" />
+            <CaretRight className="h-4 w-4 ml-2" />
           </Button>
         ) : (
           <Button
@@ -653,7 +653,7 @@ export default function NewTenantPage() {
             className="bg-deepBlue-600 hover:bg-deepBlue-700"
           >
             {createTenant.isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              <Spinner className="h-4 w-4 animate-spin mr-2" />
             ) : (
               <Check className="h-4 w-4 mr-2" />
             )}

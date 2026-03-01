@@ -5,25 +5,25 @@ import { useBillingOverview } from "@/hooks/use-tenants";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2, CreditCard, AlertTriangle, Clock, CheckCircle2, Ban, Building2, FlaskConical } from "lucide-react";
+import { Spinner, CreditCard, Warning, Clock, CheckCircle, Prohibit, Buildings, Flask } from "@phosphor-icons/react";
 import type { SubscriptionStatus, BillingOverviewItem } from "@/types/tenant";
 
 function StatusBadge({ status }: { status: SubscriptionStatus }) {
   switch (status) {
     case "active":
-      return <Badge variant="success" className="gap-1"><CheckCircle2 className="h-3 w-3" />Active</Badge>;
+      return <Badge variant="success" className="gap-1"><CheckCircle className="h-3 w-3" />Active</Badge>;
     case "expiring_soon":
       return <Badge variant="warning" className="gap-1"><Clock className="h-3 w-3" />Expiring Soon</Badge>;
     case "expired":
-      return <Badge variant="destructive" className="gap-1"><AlertTriangle className="h-3 w-3" />Expired</Badge>;
+      return <Badge variant="destructive" className="gap-1"><Warning className="h-3 w-3" />Expired</Badge>;
     case "trial":
-      return <Badge className="gap-1 bg-purple-100 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300"><FlaskConical className="h-3 w-3" />Trial</Badge>;
+      return <Badge className="gap-1 bg-purple-100 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300"><Flask className="h-3 w-3" />Trial</Badge>;
     case "trial_expiring":
-      return <Badge variant="warning" className="gap-1"><FlaskConical className="h-3 w-3" />Trial Expiring</Badge>;
+      return <Badge variant="warning" className="gap-1"><Flask className="h-3 w-3" />Trial Expiring</Badge>;
     case "trial_expired":
-      return <Badge variant="destructive" className="gap-1"><FlaskConical className="h-3 w-3" />Trial Ended</Badge>;
+      return <Badge variant="destructive" className="gap-1"><Flask className="h-3 w-3" />Trial Ended</Badge>;
     default:
-      return <Badge variant="secondary" className="gap-1"><Ban className="h-3 w-3" />Not Set</Badge>;
+      return <Badge variant="secondary" className="gap-1"><Prohibit className="h-3 w-3" />Not Set</Badge>;
   }
 }
 
@@ -76,16 +76,16 @@ export default function BillingPage() {
 
       {isLoading ? (
         <div className="flex items-center justify-center py-16">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          <Spinner className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
       ) : (
         <>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            <SummaryCard label="Expired" count={expired.length} variant="destructive" icon={AlertTriangle} />
+            <SummaryCard label="Expired" count={expired.length} variant="destructive" icon={Warning} />
             <SummaryCard label="Expiring Soon" count={expiringSoon.length} variant="warning" icon={Clock} />
-            <SummaryCard label="Active" count={active.length} variant="success" icon={CheckCircle2} />
-            <SummaryCard label="On Trial" count={trials.length} variant="secondary" icon={FlaskConical} />
-            <SummaryCard label="Not Set" count={notSet.length} variant="secondary" icon={Ban} />
+            <SummaryCard label="Active" count={active.length} variant="success" icon={CheckCircle} />
+            <SummaryCard label="On Trial" count={trials.length} variant="secondary" icon={Flask} />
+            <SummaryCard label="Not Set" count={notSet.length} variant="secondary" icon={Prohibit} />
           </div>
 
           {tenants.length === 0 ? (
@@ -102,6 +102,7 @@ export default function BillingPage() {
               </CardHeader>
               <CardContent className="p-0">
                 <div className="rounded-b-md overflow-hidden">
+                <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b bg-muted/50">
@@ -121,6 +122,7 @@ export default function BillingPage() {
                     </tbody>
                   </table>
                 </div>
+                </div>
               </CardContent>
             </Card>
           )}
@@ -138,7 +140,7 @@ function TenantBillingRow({ item }: { item: BillingOverviewItem }) {
     <tr className="border-b hover:bg-muted/25 transition-colors">
       <td className="px-4 py-3">
         <div className="flex items-center gap-2">
-          <Building2 className="h-4 w-4 text-muted-foreground shrink-0" />
+          <Buildings className="h-4 w-4 text-muted-foreground shrink-0" />
           <div>
             <Link
               href={`/tenants/${item.tenantId}?tab=billing`}

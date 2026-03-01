@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Loader2, Rocket } from "lucide-react";
+import { Spinner, Rocket } from "@phosphor-icons/react";
 import { format, formatDistanceToNow } from "date-fns";
 import type { Deployment } from "@/types/deployment";
 
@@ -147,7 +147,7 @@ export default function DeploymentsPage() {
 
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          <Spinner className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
       ) : displayDeployments.length === 0 ? (
         <Card>
@@ -159,7 +159,7 @@ export default function DeploymentsPage() {
         </Card>
       ) : (
         <>
-          <div className="rounded-md border">
+          <div className="rounded-md border overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b bg-muted/50">
@@ -211,7 +211,7 @@ export default function DeploymentsPage() {
           </div>
 
           {pagination && pagination.pages > 1 && (
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-4">
               <p className="text-sm text-muted-foreground">
                 Showing {displayDeployments.length} of {pagination.total} deployments
               </p>

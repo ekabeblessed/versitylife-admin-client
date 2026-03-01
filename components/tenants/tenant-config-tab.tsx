@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Loader2, Save, Rocket, Plus, Trash2 } from "lucide-react";
+import { Spinner, FloppyDisk, Rocket, Plus, Trash } from "@phosphor-icons/react";
 import type { Tenant } from "@/types/tenant";
 
 const FRONTEND_URL_KEYS = [
@@ -142,7 +142,7 @@ export function TenantConfigTab({ tenant }: TenantConfigTabProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           {FRONTEND_URL_KEYS.map(({ key, label, placeholder }) => (
-            <div key={key} className="grid grid-cols-3 gap-4 items-center">
+            <div key={key} className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 sm:items-center">
               <Label className="text-sm font-medium">{label}</Label>
               <div className="col-span-2">
                 <Input
@@ -220,7 +220,7 @@ export function TenantConfigTab({ tenant }: TenantConfigTabProps) {
       {/* Custom Environment Variables */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <CardTitle>Custom Environment Variables</CardTitle>
               <CardDescription>
@@ -263,7 +263,7 @@ export function TenantConfigTab({ tenant }: TenantConfigTabProps) {
                   onClick={() => removeCustomEnvVar(index)}
                   className="text-destructive hover:text-destructive"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash className="h-4 w-4" />
                 </Button>
               </div>
             ))}
@@ -276,16 +276,16 @@ export function TenantConfigTab({ tenant }: TenantConfigTabProps) {
       <div className="flex justify-end gap-3">
         <Button variant="outline" onClick={handleSave} disabled={isSaving}>
           {updateTenant.isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            <Spinner className="h-4 w-4 animate-spin mr-2" />
           ) : (
-            <Save className="h-4 w-4 mr-2" />
+            <FloppyDisk className="h-4 w-4 mr-2" />
           )}
           Save
         </Button>
         {tenant.status === "active" && (
           <Button onClick={handleSaveAndDeploy} disabled={isSaving}>
             {deploy.isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              <Spinner className="h-4 w-4 animate-spin mr-2" />
             ) : (
               <Rocket className="h-4 w-4 mr-2" />
             )}

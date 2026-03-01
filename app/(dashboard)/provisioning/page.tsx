@@ -9,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Loader2, Workflow } from "lucide-react";
+import { Spinner, GitBranch } from "@phosphor-icons/react";
 import { format } from "date-fns";
 
 const JOB_STATUSES = ["pending", "in_progress", "completed", "failed", "cancelled"] as const;
@@ -60,19 +60,19 @@ export default function ProvisioningPage() {
 
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          <Spinner className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
       ) : jobs.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <Workflow className="h-12 w-12 text-muted-foreground mb-4" />
+            <GitBranch className="h-12 w-12 text-muted-foreground mb-4" />
             <p className="text-lg font-medium">No provisioning jobs found</p>
             <p className="text-muted-foreground">Jobs will appear here when tenants are provisioned.</p>
           </CardContent>
         </Card>
       ) : (
         <>
-          <div className="rounded-md border">
+          <div className="rounded-md border overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b bg-muted/50">
@@ -137,7 +137,7 @@ export default function ProvisioningPage() {
           </div>
 
           {pagination && pagination.pages > 1 && (
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-4">
               <p className="text-sm text-muted-foreground">
                 Showing {jobs.length} of {pagination.total} jobs
               </p>

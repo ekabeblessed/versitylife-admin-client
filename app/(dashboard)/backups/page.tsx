@@ -5,7 +5,7 @@ import { useBackupsOverview, useTriggerBackup } from "@/hooks/use-backups";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Loader2, Database, Play } from "lucide-react";
+import { Spinner, HardDrives, Play } from "@phosphor-icons/react";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
 
@@ -37,18 +37,18 @@ export default function BackupsPage() {
 
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          <Spinner className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
       ) : overview.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <Database className="h-12 w-12 text-muted-foreground mb-4" />
+            <HardDrives className="h-12 w-12 text-muted-foreground mb-4" />
             <p className="text-lg font-medium">No active tenants</p>
             <p className="text-muted-foreground">Backup information will appear when tenants are active.</p>
           </CardContent>
         </Card>
       ) : (
-        <div className="rounded-md border">
+        <div className="rounded-md border overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b bg-muted/50">

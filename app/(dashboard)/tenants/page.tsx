@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { TenantComparisonDialog } from "@/components/tenants/tenant-comparison-dialog";
-import { Plus, Search, Building2, Loader2, ExternalLink, Download, HeartPulse, Rocket, ArrowLeftRight } from "lucide-react";
+import { Plus, MagnifyingGlass, Buildings, Spinner, ArrowSquareOut, Download, Heartbeat, Rocket, ArrowsLeftRight } from "@phosphor-icons/react";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
 import type { Tenant, Subscription, SubscriptionStatus } from "@/types/tenant";
@@ -53,6 +53,13 @@ export default function TenantsPage() {
   const tenants = data?.tenants || [];
   const pagination = data?.pagination;
 
+  const stats = {
+    total: pagination?.total || 0,
+    active: tenants.filter(t => t.status === "active").length,
+    provisioning: tenants.filter(t => t.status === "provisioning").length,
+    error: tenants.filter(t => t.status === "error").length,
+  };
+
   // Auto-run batch health check once when tenants first load
   useEffect(() => {
     if (tenants.length > 0 && !healthCheckedRef.current) {
@@ -63,29 +70,45 @@ export default function TenantsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Tenants</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl font-bold text-white">Tenants</h1>
+          <p className="text-slate-400 mt-1">
             Manage all university tenants across the platform
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setCompareOpen(true)}>
-            <ArrowLeftRight className="h-4 w-4 mr-2" />
+        <div className="flex flex-wrap gap-2">
+          <Button 
+            variant="outline" 
+            onClick={() => setCompareOpen(true)}
+            className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white"
+          >
+            <ArrowsLeftRight className="h-4 w-4 mr-2" />
             Compare
           </Button>
-          <Button variant="outline" onClick={() => setBulkDialogOpen(true)}>
+          <Button 
+            variant="outline" 
+            onClick={() => setBulkDialogOpen(true)}
+            className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white"
+          >
             <Rocket className="h-4 w-4 mr-2" />
             Bulk Deploy
           </Button>
-          <Button variant="outline" asChild>
+          <Button 
+            variant="outline" 
+            asChild
+            className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white"
+          >
             <Link href="/tenants/import">
               <Download className="h-4 w-4 mr-2" />
-              Import Existing
+              Import
             </Link>
           </Button>
-          <Button asChild>
+          <Button 
+            asChild
+            className="bg-goldenYellow-500 hover:bg-goldenYellow-600 text-slate-900 font-medium"
+          >
             <Link href="/tenants/new">
               <Plus className="h-4 w-4 mr-2" />
               Add University
@@ -94,9 +117,58 @@ export default function TenantsPage() {
         </div>
       </div>
 
-      <div className="flex gap-4">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-slate-400 text-sm font-medium">Total Tenants</p>
+              <p className="text-2xl font-bold text-white mt-1">{stats.total}</p>
+            </div>
+            <div className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center">
+              <Buildings weight="bold" className="h-5 w-5 text-goldenYellow-400" />
+            </div>
+          </div>
+        </div>
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-slate-400 text-sm font-medium">Active</p>
+              <p className="text-2xl font-bold text-emerald-400 mt-1">{stats.active}</p>
+            </div>
+            <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+              <Heartbeat weight="fill" className="h-5 w-5 text-emerald-400" />
+            </div>
+          </div>
+        </div>
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-slate-400 text-sm font-medium">Provisioning</p>
+              <p className="text-2xl font-bold text-blue-400 mt-1">{stats.provisioning}</p>
+            </div>
+            <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
+              <Spinner className="h-5 w-5 text-blue-400 animate-spin" />
+            </div>
+          </div>
+        </div>
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-slate-400 text-sm font-medium">Errors</p>
+              <p className="text-2xl font-bold text-red-400 mt-1">{stats.error}</p>
+            </div>
+            <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center">
+              <Rocket weight="fill" className="h-5 w-5 text-red-400" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Filters Bar */}
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+        <div className="relative flex-1 max-w-sm w-full">
+          <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
           <Input
             placeholder="Search universities..."
             value={search}
@@ -104,7 +176,7 @@ export default function TenantsPage() {
               setSearch(e.target.value);
               setPage(1);
             }}
-            className="pl-9"
+            className="pl-9 h-10 bg-slate-900 border-slate-700 text-slate-100 placeholder:text-slate-500 focus:border-goldenYellow-500 focus:ring-goldenYellow-500"
           />
         </div>
         <Select
@@ -114,15 +186,15 @@ export default function TenantsPage() {
             setPage(1);
           }}
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] h-10 bg-slate-900 border-slate-700 text-slate-300">
             <SelectValue placeholder="All statuses" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All statuses</SelectItem>
-            <SelectItem value="active">Active</SelectItem>
-            <SelectItem value="provisioning">Provisioning</SelectItem>
-            <SelectItem value="inactive">Inactive</SelectItem>
-            <SelectItem value="error">Error</SelectItem>
+          <SelectContent className="bg-slate-900 border-slate-800">
+            <SelectItem value="all" className="text-slate-300 focus:bg-slate-800">All statuses</SelectItem>
+            <SelectItem value="active" className="text-slate-300 focus:bg-slate-800">Active</SelectItem>
+            <SelectItem value="provisioning" className="text-slate-300 focus:bg-slate-800">Provisioning</SelectItem>
+            <SelectItem value="inactive" className="text-slate-300 focus:bg-slate-800">Inactive</SelectItem>
+            <SelectItem value="error" className="text-slate-300 focus:bg-slate-800">Error</SelectItem>
           </SelectContent>
         </Select>
         <Button
@@ -130,95 +202,103 @@ export default function TenantsPage() {
           size="sm"
           onClick={() => batchHealth.mutate()}
           disabled={batchHealth.isPending}
+          className="h-10 border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white"
         >
           {batchHealth.isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            <Spinner className="h-4 w-4 animate-spin mr-2" />
           ) : (
-            <HeartPulse className="h-4 w-4 mr-2" />
+            <Heartbeat className="h-4 w-4 mr-2" />
           )}
           Check Health
         </Button>
       </div>
 
+      {/* Table */}
       {isLoading ? (
-        <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <div className="flex items-center justify-center py-16">
+          <Spinner className="h-8 w-8 animate-spin text-goldenYellow-500" />
         </div>
       ) : tenants.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <Building2 className="h-12 w-12 text-muted-foreground mb-4" />
-            <p className="text-lg font-medium">No tenants found</p>
-            <p className="text-muted-foreground">Get started by adding a university.</p>
-          </CardContent>
-        </Card>
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-12 text-center">
+          <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center mx-auto mb-4">
+            <Buildings className="h-8 w-8 text-slate-500" />
+          </div>
+          <p className="text-lg font-medium text-white">No tenants found</p>
+          <p className="text-slate-400 mt-1">Get started by adding a university.</p>
+        </div>
       ) : (
         <>
-          <div className="rounded-md border">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+            <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b bg-muted/50">
-                  <th className="h-12 px-4 text-left font-medium">University</th>
-                  <th className="h-12 px-4 text-left font-medium">Tenant ID</th>
-                  <th className="h-12 px-4 text-left font-medium">Country</th>
-                  <th className="h-12 px-4 text-left font-medium">Status</th>
-                  <th className="h-12 px-4 text-left font-medium">Health</th>
-                  <th className="h-12 px-4 text-left font-medium">Billing</th>
-                  <th className="h-12 px-4 text-left font-medium">Created</th>
-                  <th className="h-12 px-4 text-left font-medium">Actions</th>
+                <tr className="border-b border-slate-800 bg-slate-800/50">
+                  <th className="h-12 px-5 text-left font-semibold text-slate-300">University</th>
+                  <th className="h-12 px-5 text-left font-semibold text-slate-300">Tenant ID</th>
+                  <th className="h-12 px-5 text-left font-semibold text-slate-300">Country</th>
+                  <th className="h-12 px-5 text-left font-semibold text-slate-300">Status</th>
+                  <th className="h-12 px-5 text-left font-semibold text-slate-300">Health</th>
+                  <th className="h-12 px-5 text-left font-semibold text-slate-300">Billing</th>
+                  <th className="h-12 px-5 text-left font-semibold text-slate-300">Created</th>
+                  <th className="h-12 px-5 text-left font-semibold text-slate-300">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {tenants.map((tenant) => (
-                  <tr key={tenant._id} className="border-b hover:bg-muted/25 transition-colors">
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        <Link href={`/tenants/${tenant.tenantId}`} className="font-medium hover:underline">
-                          {tenant.university.name}
-                        </Link>
-                        {tenant.isStaging && (
-                          <Badge variant="warning" className="text-[10px] px-1.5 py-0">STAGING</Badge>
-                        )}
+                  <tr key={tenant._id} className="border-b border-slate-800 hover:bg-slate-800/30 transition-colors">
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-goldenYellow-400 to-goldenYellow-600 flex items-center justify-center text-slate-900 font-bold text-sm">
+                          {tenant.university.name.charAt(0)}
+                        </div>
+                        <div>
+                          <Link href={`/tenants/${tenant.tenantId}`} className="font-medium text-white hover:text-goldenYellow-400 transition-colors">
+                            {tenant.university.name}
+                          </Link>
+                          {tenant.isStaging && (
+                            <Badge variant="warning" className="ml-2 text-[10px] px-1.5 py-0 bg-amber-500/20 text-amber-400 border-amber-500/30">STAGING</Badge>
+                          )}
+                        </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-muted-foreground font-mono text-xs">
+                    <td className="px-5 py-4 text-slate-400 font-mono text-xs">
                       {tenant.tenantId}
                     </td>
-                    <td className="px-4 py-3">{tenant.university.country}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-4 text-slate-300">{tenant.university.country}</td>
+                    <td className="px-5 py-4">
                       <StatusBadge status={tenant.status} />
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-4">
                       <HealthBadge status={tenant.lastHealthCheck?.status} />
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-4">
                       {(() => {
                         const s = computeSubStatus(tenant.subscription);
                         if (s === "expired" || s === "trial_expired")
-                          return <Badge variant="destructive" className="text-xs">{s === "trial_expired" ? "Trial Ended" : "Expired"}</Badge>;
+                          return <Badge variant="destructive" className="text-xs bg-red-500/20 text-red-400 border-red-500/30">{s === "trial_expired" ? "Trial Ended" : "Expired"}</Badge>;
                         if (s === "expiring_soon")
-                          return <Badge variant="warning" className="text-xs">Expiring</Badge>;
+                          return <Badge variant="warning" className="text-xs bg-amber-500/20 text-amber-400 border-amber-500/30">Expiring</Badge>;
                         if (s === "active")
-                          return <Badge variant="success" className="text-xs">Active</Badge>;
+                          return <Badge variant="success" className="text-xs bg-emerald-500/20 text-emerald-400 border-emerald-500/30">Active</Badge>;
                         if (s === "trial_expiring")
-                          return <Badge variant="warning" className="text-xs">Trial Expiring</Badge>;
+                          return <Badge variant="warning" className="text-xs bg-amber-500/20 text-amber-400 border-amber-500/30">Trial Expiring</Badge>;
                         if (s === "trial")
-                          return <Badge className="text-xs bg-purple-100 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300">Trial</Badge>;
-                        return <span className="text-muted-foreground text-xs italic">—</span>;
+                          return <Badge className="text-xs bg-purple-500/20 text-purple-400 border-purple-500/30">Trial</Badge>;
+                        return <span className="text-slate-500 text-xs italic">—</span>;
                       })()}
                     </td>
-                    <td className="px-4 py-3 text-muted-foreground">
+                    <td className="px-5 py-4 text-slate-400">
                       {formatDistanceToNow(new Date(tenant.createdAt), { addSuffix: true })}
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="sm" asChild>
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-1">
+                        <Button variant="ghost" size="sm" asChild className="text-slate-400 hover:text-white">
                           <Link href={`/tenants/${tenant.tenantId}`}>View</Link>
                         </Button>
                         {tenant.deployment.serviceUrl && (
-                          <Button variant="ghost" size="icon" asChild>
+                          <Button variant="ghost" size="icon" asChild className="text-slate-400 hover:text-white">
                             <a href={tenant.deployment.serviceUrl} target="_blank" rel="noopener noreferrer">
-                              <ExternalLink className="h-4 w-4" />
+                              <ArrowSquareOut className="h-4 w-4" />
                             </a>
                           </Button>
                         )}
@@ -228,12 +308,13 @@ export default function TenantsPage() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
 
           {pagination && pagination.pages > 1 && (
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-muted-foreground">
-                Showing {tenants.length} of {pagination.total} tenants
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <p className="text-sm text-slate-400">
+                Showing <span className="text-white font-medium">{tenants.length}</span> of <span className="text-white font-medium">{pagination.total}</span> tenants
               </p>
               <div className="flex gap-2">
                 <Button
@@ -241,6 +322,7 @@ export default function TenantsPage() {
                   size="sm"
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page <= 1}
+                  className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white"
                 >
                   Previous
                 </Button>
@@ -249,6 +331,7 @@ export default function TenantsPage() {
                   size="sm"
                   onClick={() => setPage((p) => p + 1)}
                   disabled={page >= pagination.pages}
+                  className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white"
                 >
                   Next
                 </Button>
@@ -400,7 +483,7 @@ function BulkDeployDialog({
             disabled={selectedIds.size === 0 || bulkDeploy.isPending}
           >
             {bulkDeploy.isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              <Spinner className="h-4 w-4 animate-spin mr-2" />
             ) : (
               <Rocket className="h-4 w-4 mr-2" />
             )}

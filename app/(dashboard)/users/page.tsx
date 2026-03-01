@@ -15,7 +15,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Plus, Search, Loader2, Users, LogOut } from "lucide-react";
+import { Plus, MagnifyingGlass, Spinner, Users, SignOut } from "@phosphor-icons/react";
 import { format, formatDistanceToNow } from "date-fns";
 
 export default function UsersPage() {
@@ -80,7 +80,7 @@ export default function UsersPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">Platform Users</h1>
           <p className="text-muted-foreground">
@@ -103,7 +103,7 @@ export default function UsersPage() {
 
         <TabsContent value="users" className="space-y-4">
           <div className="relative max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search users..."
               value={search}
@@ -114,7 +114,7 @@ export default function UsersPage() {
 
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              <Spinner className="h-8 w-8 animate-spin text-muted-foreground" />
             </div>
           ) : users.length === 0 ? (
             <Card>
@@ -124,7 +124,7 @@ export default function UsersPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="rounded-md border">
+            <div className="rounded-md border overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b bg-muted/50">
@@ -175,7 +175,7 @@ export default function UsersPage() {
           <TabsContent value="activity" className="space-y-4">
             {activityLoading ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                <Spinner className="h-8 w-8 animate-spin text-muted-foreground" />
               </div>
             ) : activityUsers.length === 0 ? (
               <Card>
@@ -185,7 +185,7 @@ export default function UsersPage() {
                 </CardContent>
               </Card>
             ) : (
-              <div className="rounded-md border">
+              <div className="rounded-md border overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b bg-muted/50">
@@ -233,7 +233,7 @@ export default function UsersPage() {
                             onClick={() => forceLogoutMutation.mutate(user._id)}
                             disabled={forceLogoutMutation.isPending || user._id === currentUser?._id}
                           >
-                            <LogOut className="h-3 w-3 mr-1" />
+                            <SignOut className="h-3 w-3 mr-1" />
                             Force Logout
                           </Button>
                         </td>
@@ -253,7 +253,7 @@ export default function UsersPage() {
             <DialogTitle>Add Platform User</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>First Name</Label>
                 <Input
@@ -314,7 +314,7 @@ export default function UsersPage() {
               Cancel
             </Button>
             <Button onClick={() => createMutation.mutate()} disabled={createMutation.isPending}>
-              {createMutation.isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              {createMutation.isPending && <Spinner className="h-4 w-4 animate-spin mr-2" />}
               Create User
             </Button>
           </DialogFooter>

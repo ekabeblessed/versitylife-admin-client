@@ -11,7 +11,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { StatusBadge, HealthBadge } from "@/components/tenants/status-badge";
-import { X } from "lucide-react";
+import { X } from "@phosphor-icons/react";
 import { format } from "date-fns";
 import type { Tenant } from "@/types/tenant";
 
@@ -29,6 +29,7 @@ interface ComparisonRow {
 const comparisonRows: ComparisonRow[] = [
   { label: "Full Name", getValue: (t) => t.university.fullName, section: "Identity" },
   { label: "Code", getValue: (t) => t.university.code },
+  { label: "Logo", getValue: (t) => t.university.logo || "-" },
   { label: "Country", getValue: (t) => t.university.country },
   { label: "Timezone", getValue: (t) => t.university.timezone },
   { label: "Contact Email", getValue: (t) => t.university.contactEmail || "-" },
@@ -93,7 +94,7 @@ export function TenantComparisonDialog({ open, onOpenChange }: TenantComparisonD
               <Badge key={t.tenantId} variant="secondary" className="flex items-center gap-1 px-3 py-1.5">
                 {t.university.name}
                 <button onClick={() => removeTenant(t.tenantId)} className="ml-1 hover:text-destructive">
-                  <X className="h-3 w-3" />
+                  <X weight="bold" className="h-3 w-3" />
                 </button>
               </Badge>
             ))}
@@ -121,7 +122,21 @@ export function TenantComparisonDialog({ open, onOpenChange }: TenantComparisonD
                     <th className="h-10 px-4 text-left font-medium w-[160px]">Property</th>
                     {selectedTenants.map((t) => (
                       <th key={t.tenantId} className="h-10 px-4 text-left font-medium">
-                        {t.university.name}
+                        <div className="flex items-center gap-2">
+                          {t.university.logo ? (
+                            <img
+                              src={t.university.logo}
+                              alt={t.university.name}
+                              className="h-6 w-6 rounded object-contain bg-white p-0.5"
+                              onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                            />
+                          ) : (
+                            <div className="h-6 w-6 rounded bg-gradient-to-br from-goldenYellow-400 to-goldenYellow-600 flex items-center justify-center text-slate-900 font-bold text-[10px] shrink-0">
+                              {t.university.name.charAt(0)}
+                            </div>
+                          )}
+                          {t.university.name}
+                        </div>
                       </th>
                     ))}
                   </tr>
@@ -154,6 +169,17 @@ export function TenantComparisonDialog({ open, onOpenChange }: TenantComparisonD
                                 <StatusBadge status={t.status} />
                               ) : row.label === "Health" ? (
                                 <HealthBadge status={t.lastHealthCheck?.status} />
+                              ) : row.label === "Logo" ? (
+                                t.university.logo ? (
+                                  <img
+                                    src={t.university.logo}
+                                    alt={t.university.name}
+                                    className="h-10 w-10 rounded-lg object-contain bg-white p-0.5 border border-border"
+                                    onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                                  />
+                                ) : (
+                                  <span className="text-muted-foreground text-xs">No logo</span>
+                                )
                               ) : (
                                 <span className={`${isDiff ? "font-medium" : ""} break-all`}>
                                   {row.getValue(t)}

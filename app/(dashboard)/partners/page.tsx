@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import {
   Plus, MagnifyingGlass, Spinner, ArrowSquareOut, Heartbeat, Pencil, Trash,
-  ToggleLeft, ToggleRight, Handshake, CheckCircle, XCircle, Warning,
+  ToggleLeft, ToggleRight, Handshake, CheckCircle, XCircle, Warning, DownloadSimple, QrCode,
 } from "@phosphor-icons/react";
 import { toast } from "sonner";
 import type { Partner, PartnerInput } from "@/types/partner";
@@ -693,6 +693,47 @@ function PartnerFormDialog({
               />
             </div>
           </div>
+
+          {/* QR Code — only shown when editing an existing partner */}
+          {partner?.qrCodeUrl && (
+            <>
+              <Separator />
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <QrCode className="h-4 w-4 text-muted-foreground" />
+                  <Label>Onboarding QR Code</Label>
+                </div>
+                <div className="flex items-center gap-6 p-4 rounded-lg border border-slate-700 bg-slate-800/50">
+                  <img
+                    src={partner.qrCodeUrl}
+                    alt={`QR Code for ${partner.code}`}
+                    className="h-28 w-28 rounded-lg bg-white p-1 shrink-0"
+                  />
+                  <div className="space-y-1">
+                    <p className="text-sm text-slate-300">
+                      Students scan this to join <span className="font-semibold text-white">{partner.name}</span> on VersityLife.
+                    </p>
+                    <p className="text-xs font-mono text-slate-500">versitylife://join/{partner.code}</p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="mt-2"
+                      onClick={() => {
+                        const link = document.createElement("a");
+                        link.href = partner.qrCodeUrl!;
+                        link.download = `${partner.code}-qr-code.png`;
+                        link.click();
+                      }}
+                    >
+                      <DownloadSimple className="h-4 w-4 mr-2" />
+                      Download QR Code
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>

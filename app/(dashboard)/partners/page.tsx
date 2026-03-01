@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   usePartners, useCreatePartner, useUpdatePartner,
   useSetPartnerStatus, useDeletePartner, usePartnerHealthCheck,
@@ -392,9 +392,9 @@ function PartnerFormDialog({
 }) {
   const [form, setForm] = useState<PartnerInput>(DEFAULT_FORM);
 
-  // Sync form when editing partner changes
-  useState(() => {
-    if (partner) {
+  // Sync form when dialog opens or partner changes
+  useEffect(() => {
+    if (open && partner) {
       setForm({
         name: partner.name,
         shortName: partner.shortName || "",
@@ -413,10 +413,10 @@ function PartnerFormDialog({
         supportEmail: partner.supportEmail || "",
         supportPhone: partner.supportPhone || "",
       });
-    } else {
+    } else if (open && !partner) {
       setForm(DEFAULT_FORM);
     }
-  });
+  }, [open, partner]);
 
   // Reset when dialog opens/closes
   function handleOpenChange(o: boolean) {

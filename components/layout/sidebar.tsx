@@ -7,7 +7,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import {
   Buildings, Users, Gear, X, Scroll,
-  Rocket, Heartbeat, HardDrives, GitBranch, CreditCard, Handshake,
+  Rocket, Heartbeat, HardDrives, GitBranch, CreditCard, Handshake, Envelope,
 } from "@phosphor-icons/react";
 
 const navGroups = [
@@ -32,6 +32,7 @@ const navGroups = [
     label: "Administration",
     items: [
       { href: "/users", label: "Users", icon: Users },
+      { href: "/contacts", label: "Contacts", icon: Envelope },
       { href: "/audit-logs", label: "Audit Logs", icon: Scroll },
       { href: "/settings", label: "Settings", icon: Gear },
     ],

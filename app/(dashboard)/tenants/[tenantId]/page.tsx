@@ -63,14 +63,14 @@ function CloudRunMetricsCard({ tenantId }: { tenantId: string }) {
       </CardHeader>
       <CardContent className="space-y-4 pt-4">
         <div className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm">
-          <div className="text-slate-400">CPU</div>
-          <div className="text-white font-medium">{metrics.resources.cpu}</div>
-          <div className="text-slate-400">Memory</div>
-          <div className="text-white font-medium">{metrics.resources.memory}</div>
-          <div className="text-slate-400">Min Instances</div>
-          <div className="text-white font-medium">{metrics.scaling.minInstances}</div>
-          <div className="text-slate-400">Max Instances</div>
-          <div className="text-white font-medium">{metrics.scaling.maxInstances}</div>
+          <div className="text-xs font-medium uppercase tracking-wide text-slate-500">CPU</div>
+          <div className="text-sm font-medium text-slate-100">{metrics.resources.cpu}</div>
+          <div className="text-xs font-medium uppercase tracking-wide text-slate-500">Memory</div>
+          <div className="text-sm font-medium text-slate-100">{metrics.resources.memory}</div>
+          <div className="text-xs font-medium uppercase tracking-wide text-slate-500">Min Instances</div>
+          <div className="text-sm font-medium text-slate-100">{metrics.scaling.minInstances}</div>
+          <div className="text-xs font-medium uppercase tracking-wide text-slate-500">Max Instances</div>
+          <div className="text-sm font-medium text-slate-100">{metrics.scaling.maxInstances}</div>
         </div>
 
         {metrics.traffic.length > 0 && (
@@ -123,7 +123,7 @@ function AiUsageCard({ tenantId }: { tenantId: string }) {
 
   const { data, isLoading } = useQuery({
     queryKey: ["ai-usage", tenantId, period],
-    queryFn: () => apiClient.get<{ daily: any[]; totals: any }>(`/billing/tenants/${tenantId}/ai-usage?period=${period}`),
+    queryFn: () => apiClient.get<{ daily: any[]; totals: any }>(`/api/v1/billing/tenants/${tenantId}/ai-usage?period=${period}`),
     refetchInterval: false,
   });
 
@@ -163,14 +163,14 @@ function AiUsageCard({ tenantId }: { tenantId: string }) {
         ) : (
           <>
             <div className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm mb-4">
-              <div className="text-slate-400">Requests</div>
-              <div className="text-white font-medium">{(totals?.requests || 0).toLocaleString()}</div>
-              <div className="text-slate-400">Input Tokens</div>
-              <div className="text-white font-medium">{(totals?.inputTokens || 0).toLocaleString()}</div>
-              <div className="text-slate-400">Output Tokens</div>
-              <div className="text-white font-medium">{(totals?.outputTokens || 0).toLocaleString()}</div>
-              <div className="text-slate-400">Est. Cost</div>
-              <div className="text-white font-medium">${(totals?.estimatedCostUsd || 0).toFixed(4)}</div>
+              <div className="text-xs font-medium uppercase tracking-wide text-slate-500">Requests</div>
+              <div className="text-sm font-medium text-slate-100">{(totals?.requests || 0).toLocaleString()}</div>
+              <div className="text-xs font-medium uppercase tracking-wide text-slate-500">Input Tokens</div>
+              <div className="text-sm font-medium text-slate-100">{(totals?.inputTokens || 0).toLocaleString()}</div>
+              <div className="text-xs font-medium uppercase tracking-wide text-slate-500">Output Tokens</div>
+              <div className="text-sm font-medium text-slate-100">{(totals?.outputTokens || 0).toLocaleString()}</div>
+              <div className="text-xs font-medium uppercase tracking-wide text-slate-500">Est. Cost</div>
+              <div className="text-sm font-medium text-slate-100">${(totals?.estimatedCostUsd || 0).toFixed(4)}</div>
             </div>
             {daily.length > 0 && (
               <>
@@ -290,7 +290,22 @@ export default function TenantDetailPage({
             </Link>
           </Button>
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-goldenYellow-400 to-goldenYellow-600 flex items-center justify-center text-slate-900 font-bold text-xl">
+            {tenant.university.logo ? (
+              <img
+                src={tenant.university.logo}
+                alt={tenant.university.name}
+                className="w-14 h-14 rounded-xl object-contain bg-white p-1"
+                onError={(e) => {
+                  const el = e.currentTarget;
+                  el.style.display = 'none';
+                  el.nextElementSibling?.removeAttribute('style');
+                }}
+              />
+            ) : null}
+            <div
+              className="w-14 h-14 rounded-xl bg-gradient-to-br from-goldenYellow-400 to-goldenYellow-600 flex items-center justify-center text-slate-900 font-bold text-xl"
+              style={tenant.university.logo ? { display: 'none' } : undefined}
+            >
               {tenant.university.name.charAt(0)}
             </div>
             <div>
@@ -326,20 +341,20 @@ export default function TenantDetailPage({
       </div>
 
       <Tabs defaultValue={defaultTab} className="space-y-4">
-        <TabsList className="bg-slate-900 border border-slate-800 p-1 h-auto flex-wrap">
-          <TabsTrigger value="overview" className="data-[state=active]:bg-slate-800 data-[state=active]:text-white text-slate-400">Overview</TabsTrigger>
-          <TabsTrigger value="configuration" className="data-[state=active]:bg-slate-800 data-[state=active]:text-white text-slate-400">Configuration</TabsTrigger>
-          <TabsTrigger value="environment" className="data-[state=active]:bg-slate-800 data-[state=active]:text-white text-slate-400">Environment</TabsTrigger>
-          <TabsTrigger value="deployments" className="data-[state=active]:bg-slate-800 data-[state=active]:text-white text-slate-400">Deployments</TabsTrigger>
-          <TabsTrigger value="backups" className="data-[state=active]:bg-slate-800 data-[state=active]:text-white text-slate-400">Backups</TabsTrigger>
-          <TabsTrigger value="domains" className="data-[state=active]:bg-slate-800 data-[state=active]:text-white text-slate-400">Domains</TabsTrigger>
-          <TabsTrigger value="billing" className="data-[state=active]:bg-slate-800 data-[state=active]:text-white text-slate-400">
+        <TabsList className="flex-wrap">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="configuration">Configuration</TabsTrigger>
+          <TabsTrigger value="environment">Environment</TabsTrigger>
+          <TabsTrigger value="deployments">Deployments</TabsTrigger>
+          <TabsTrigger value="backups">Backups</TabsTrigger>
+          <TabsTrigger value="domains">Domains</TabsTrigger>
+          <TabsTrigger value="billing">
             <CreditCard className="h-3.5 w-3.5 mr-1.5" />
             Billing
           </TabsTrigger>
-          {isSuperadmin && <TabsTrigger value="secrets" className="data-[state=active]:bg-slate-800 data-[state=active]:text-white text-slate-400">Secrets</TabsTrigger>}
+          {isSuperadmin && <TabsTrigger value="secrets">Secrets</TabsTrigger>}
           {(tenant.status === "provisioning" || provJobId) && (
-            <TabsTrigger value="provisioning" className="data-[state=active]:bg-slate-800 data-[state=active]:text-white text-slate-400">Provisioning</TabsTrigger>
+            <TabsTrigger value="provisioning">Provisioning</TabsTrigger>
           )}
         </TabsList>
 
@@ -348,7 +363,7 @@ export default function TenantDetailPage({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Card className="bg-slate-900 border-slate-800">
               <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-slate-800">
-                <CardTitle className="text-sm font-medium text-slate-400">Status</CardTitle>
+                <CardTitle className="text-xs font-medium uppercase tracking-wide text-slate-400">Status</CardTitle>
                 <Waveform className="h-4 w-4 text-goldenYellow-400" />
               </CardHeader>
               <CardContent className="pt-4">
@@ -357,7 +372,7 @@ export default function TenantDetailPage({
             </Card>
             <Card className="bg-slate-900 border-slate-800">
               <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-slate-800">
-                <CardTitle className="text-sm font-medium text-slate-400">Health</CardTitle>
+                <CardTitle className="text-xs font-medium uppercase tracking-wide text-slate-400">Health</CardTitle>
                 <Heartbeat className="h-4 w-4 text-goldenYellow-400" />
               </CardHeader>
               <CardContent className="pt-4">
@@ -371,7 +386,7 @@ export default function TenantDetailPage({
             </Card>
             <Card className="bg-slate-900 border-slate-800">
               <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-slate-800">
-                <CardTitle className="text-sm font-medium text-slate-400">Region</CardTitle>
+                <CardTitle className="text-xs font-medium uppercase tracking-wide text-slate-400">Region</CardTitle>
                 <Globe className="h-4 w-4 text-goldenYellow-400" />
               </CardHeader>
               <CardContent className="pt-4">
@@ -380,7 +395,7 @@ export default function TenantDetailPage({
             </Card>
             <Card className="bg-slate-900 border-slate-800">
               <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-slate-800">
-                <CardTitle className="text-sm font-medium text-slate-400">Resources</CardTitle>
+                <CardTitle className="text-xs font-medium uppercase tracking-wide text-slate-400">Resources</CardTitle>
                 <HardDrives className="h-4 w-4 text-goldenYellow-400" />
               </CardHeader>
               <CardContent className="pt-4">
@@ -405,28 +420,28 @@ export default function TenantDetailPage({
               </CardHeader>
               <CardContent className="pt-4">
                 <div className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm">
-                  <div className="text-slate-400">Full Name</div>
-                  <div className="text-white font-medium">{tenant.university.fullName}</div>
-                  <div className="text-slate-400">Code</div>
-                  <div className="text-white font-medium">{tenant.university.code}</div>
-                  <div className="text-slate-400">Country</div>
-                  <div className="text-white font-medium">{tenant.university.country}</div>
-                  <div className="text-slate-400">Timezone</div>
-                  <div className="text-white font-medium">{tenant.university.timezone}</div>
+                  <div className="text-xs font-medium uppercase tracking-wide text-slate-500">Full Name</div>
+                  <div className="text-sm font-medium text-slate-100">{tenant.university.fullName}</div>
+                  <div className="text-xs font-medium uppercase tracking-wide text-slate-500">Code</div>
+                  <div className="text-sm font-medium text-slate-100">{tenant.university.code}</div>
+                  <div className="text-xs font-medium uppercase tracking-wide text-slate-500">Country</div>
+                  <div className="text-sm font-medium text-slate-100">{tenant.university.country}</div>
+                  <div className="text-xs font-medium uppercase tracking-wide text-slate-500">Timezone</div>
+                  <div className="text-sm font-medium text-slate-100">{tenant.university.timezone}</div>
                   {tenant.deployment.serviceUrl && (
                     <>
-                      <div className="text-slate-400">Service URL</div>
+                      <div className="text-xs font-medium uppercase tracking-wide text-slate-500">Service URL</div>
                       <div className="font-mono text-xs text-slate-300 break-all">{tenant.deployment.serviceUrl}</div>
                     </>
                   )}
                   {tenant.deployment.activeRevision && (
                     <>
-                      <div className="text-slate-400">Active Revision</div>
+                      <div className="text-xs font-medium uppercase tracking-wide text-slate-500">Active Revision</div>
                       <div className="font-mono text-xs text-slate-300">{tenant.deployment.activeRevision}</div>
                     </>
                   )}
-                  <div className="text-slate-400">Created</div>
-                  <div className="text-white font-medium">{format(new Date(tenant.createdAt), "PPP")}</div>
+                  <div className="text-xs font-medium uppercase tracking-wide text-slate-500">Created</div>
+                  <div className="text-sm font-medium text-slate-100">{format(new Date(tenant.createdAt), "PPP")}</div>
                 </div>
               </CardContent>
             </Card>
@@ -465,16 +480,16 @@ export default function TenantDetailPage({
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-slate-800 bg-slate-800/50">
-                        <th className="h-10 px-4 text-left font-semibold text-slate-300">Date</th>
-                        <th className="h-10 px-4 text-left font-semibold text-slate-300">Type</th>
-                        <th className="h-10 px-4 text-left font-semibold text-slate-300">Status</th>
-                        <th className="h-10 px-4 text-left font-semibold text-slate-300">Revision</th>
-                        <th className="h-10 px-4 text-left font-semibold text-slate-300">Triggered By</th>
+                        <th className="h-10 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Date</th>
+                        <th className="h-10 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Type</th>
+                        <th className="h-10 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Status</th>
+                        <th className="h-10 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Revision</th>
+                        <th className="h-10 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Triggered By</th>
                       </tr>
                     </thead>
                     <tbody>
                       {deployments.map((dep) => (
-                        <tr key={dep._id} className="border-b border-slate-800 hover:bg-slate-800/30">
+                        <tr key={dep._id} className="border-b border-slate-800 hover:bg-slate-800/50 transition-colors duration-100">
                           <td className="px-4 py-3 text-slate-300">
                             {format(new Date(dep.createdAt), "PPp")}
                           </td>

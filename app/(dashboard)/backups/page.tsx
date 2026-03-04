@@ -29,62 +29,61 @@ export default function BackupsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Backups</h1>
-        <p className="text-muted-foreground">
-          Overview of backup status across all active tenants
-        </p>
+        <h1 className="text-xl font-bold text-white tracking-tight">Backups</h1>
+        <p className="text-sm text-slate-400 mt-0.5">Overview of backup status across all active tenants</p>
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-12">
-          <Spinner className="h-8 w-8 animate-spin text-muted-foreground" />
+        <div className="flex flex-col items-center justify-center py-12">
+          <Spinner className="h-8 w-8 animate-spin text-goldenYellow-400" />
+          <p className="text-sm text-slate-500 mt-2">Loading backups...</p>
         </div>
       ) : overview.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <HardDrives className="h-12 w-12 text-muted-foreground mb-4" />
-            <p className="text-lg font-medium">No active tenants</p>
-            <p className="text-muted-foreground">Backup information will appear when tenants are active.</p>
-          </CardContent>
-        </Card>
+        <div className="flex flex-col items-center justify-center py-16 text-center border border-slate-800 rounded-xl bg-slate-900">
+          <div className="w-16 h-16 rounded-2xl bg-slate-800/80 border border-slate-700 flex items-center justify-center mx-auto mb-5">
+            <HardDrives className="h-8 w-8 text-slate-500" />
+          </div>
+          <p className="text-base font-semibold text-white mb-1">No active tenants</p>
+          <p className="text-sm text-slate-400 max-w-xs">Backup information will appear when tenants are active.</p>
+        </div>
       ) : (
-        <div className="rounded-md border overflow-x-auto">
+        <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b bg-muted/50">
-                <th className="h-12 px-4 text-left font-medium">Tenant</th>
-                <th className="h-12 px-4 text-left font-medium">Last Backup</th>
-                <th className="h-12 px-4 text-left font-medium">Total</th>
-                <th className="h-12 px-4 text-left font-medium">Size</th>
-                <th className="h-12 px-4 text-left font-medium">Schedule</th>
-                <th className="h-12 px-4 text-left font-medium">Actions</th>
+              <tr className="border-b border-slate-800 bg-slate-800/50">
+                <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Tenant</th>
+                <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Last Backup</th>
+                <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Total</th>
+                <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Size</th>
+                <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Schedule</th>
+                <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Actions</th>
               </tr>
             </thead>
             <tbody>
               {overview.map((item) => (
-                <tr key={item.tenantId} className="border-b hover:bg-muted/25 transition-colors">
+                <tr key={item.tenantId} className="border-b border-slate-800 hover:bg-slate-800/50 transition-colors duration-100">
                   <td className="px-4 py-3">
                     <Link
                       href={`/tenants/${item.tenantId}?tab=backups`}
-                      className="font-medium hover:underline"
+                      className="font-medium text-white hover:text-goldenYellow-400 transition-colors"
                     >
                       {item.universityName}
                     </Link>
-                    <div className="text-xs text-muted-foreground font-mono">
+                    <div className="text-xs text-slate-500 font-mono">
                       {item.tenantId}
                     </div>
                   </td>
                   <td className="px-4 py-3">
                     {item.lastBackup ? (
-                      <span className="text-muted-foreground">
+                      <span className="text-slate-400">
                         {formatDistanceToNow(new Date(item.lastBackup.created), { addSuffix: true })}
                       </span>
                     ) : (
-                      <span className="text-muted-foreground">Never</span>
+                      <span className="text-slate-500">Never</span>
                     )}
                   </td>
-                  <td className="px-4 py-3">{item.totalBackups}</td>
-                  <td className="px-4 py-3 text-muted-foreground">
+                  <td className="px-4 py-3 text-slate-200">{item.totalBackups}</td>
+                  <td className="px-4 py-3 text-slate-400">
                     {item.totalSizeFormatted}
                   </td>
                   <td className="px-4 py-3">

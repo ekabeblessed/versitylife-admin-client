@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authApi } from "@/lib/api/auth-api";
 import { toast } from "sonner";
-import { Loader2, ShieldCheck } from "lucide-react";
+import { Spinner, ShieldCheck } from "@phosphor-icons/react";
 
 export function TwoFactorDialog() {
   const [open, setOpen] = useState(false);
@@ -65,7 +65,7 @@ export function TwoFactorDialog() {
               Click below to generate a QR code for your authenticator app.
             </p>
             <Button onClick={handleSetup} disabled={loading} className="w-full">
-              {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              {loading && <Spinner className="h-4 w-4 animate-spin mr-2" />}
               Generate QR Code
             </Button>
           </div>
@@ -92,7 +92,7 @@ export function TwoFactorDialog() {
               />
             </div>
             <Button onClick={handleVerify} disabled={loading || verifyCode.length !== 6} className="w-full">
-              {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              {loading && <Spinner className="h-4 w-4 animate-spin mr-2" />}
               Verify & Enable
             </Button>
           </div>

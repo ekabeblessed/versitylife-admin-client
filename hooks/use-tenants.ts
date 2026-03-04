@@ -49,6 +49,18 @@ export function useToggleTenant() {
   });
 }
 
+export function useDeleteTenant() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ tenantId, twoFactorCode }: { tenantId: string; twoFactorCode: string }) =>
+      tenantsApi.destroy(tenantId, twoFactorCode),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["tenants"] });
+      queryClient.invalidateQueries({ queryKey: ["tenant", variables.tenantId] });
+    },
+  });
+}
+
 export function useTenantHealth(tenantId: string) {
   return useQuery({
     queryKey: ["tenant-health", tenantId],

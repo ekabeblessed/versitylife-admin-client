@@ -157,7 +157,7 @@ export default function ImportTenantPage() {
                             key={svc.serviceName}
                             className={`border-b cursor-pointer transition-colors ${
                               selectedService?.serviceName === svc.serviceName
-                                ? "bg-deepBlue-50 dark:bg-deepBlue-950"
+                                ? "bg-goldenYellow-500/10"
                                 : "hover:bg-muted/25"
                             }`}
                             onClick={() => selectService(svc)}
@@ -166,7 +166,7 @@ export default function ImportTenantPage() {
                               <RadioButton
                                 className={`h-4 w-4 ${
                                   selectedService?.serviceName === svc.serviceName
-                                    ? "text-deepBlue-600"
+                                    ? "text-goldenYellow-400"
                                     : "text-muted-foreground"
                                 }`}
                               />

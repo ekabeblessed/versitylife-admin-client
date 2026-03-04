@@ -629,16 +629,16 @@ export function TenantBackupsTab({ tenant }: TenantBackupsTabProps) {
             <div className="rounded-md border overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b bg-muted/50">
-                    <th className="h-10 px-4 text-left font-medium">
+                  <tr className="border-b border-slate-800 bg-slate-800/50">
+                    <th className="h-10 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                       Date/Time
                     </th>
-                    <th className="h-10 px-4 text-left font-medium">Type</th>
-                    <th className="h-10 px-4 text-left font-medium">Size</th>
-                    <th className="h-10 px-4 text-left font-medium hidden lg:table-cell">
+                    <th className="h-10 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Type</th>
+                    <th className="h-10 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Size</th>
+                    <th className="h-10 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 hidden lg:table-cell">
                       Filename
                     </th>
-                    <th className="h-10 px-4 text-right font-medium">
+                    <th className="h-10 px-4 text-right text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                       Actions
                     </th>
                   </tr>

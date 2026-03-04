@@ -65,6 +65,11 @@ export const tenantsApi = {
   toggle: (tenantId: string) =>
     apiClient.patch<TenantResponse & { message: string }>(`/api/v1/tenants/${tenantId}/toggle`),
 
+  destroy: (tenantId: string, twoFactorCode: string) =>
+    apiClient.delete<{ message: string }>(`/api/v1/tenants/${tenantId}`, {
+      data: { twoFactorCode },
+    }),
+
   checkHealth: (tenantId: string) =>
     apiClient.get<HealthResponse>(`/api/v1/tenants/${tenantId}/health`),
 

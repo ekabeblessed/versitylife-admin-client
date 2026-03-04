@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Bell, Check, CheckCheck } from "lucide-react";
+import { Bell, Check, Checks } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -74,7 +74,7 @@ export function NotificationBell() {
               className="h-auto p-0 text-xs text-muted-foreground hover:text-foreground"
               onClick={() => markAllRead.mutate()}
             >
-              <CheckCheck className="mr-1 h-3 w-3" />
+              <Checks weight="bold" className="mr-1 h-3 w-3" />
               Mark all read
             </Button>
           )}

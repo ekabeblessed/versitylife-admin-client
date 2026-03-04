@@ -66,10 +66,8 @@ export default function AuditLogsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Audit Logs</h1>
-        <p className="text-muted-foreground">
-          View all platform activity and security events
-        </p>
+        <h1 className="text-xl font-bold text-white tracking-tight">Audit Logs</h1>
+        <p className="text-sm text-slate-400 mt-0.5">View all platform activity and security events</p>
       </div>
 
       <div className="flex flex-wrap gap-4">
@@ -128,28 +126,31 @@ export default function AuditLogsPage() {
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-12">
-          <Spinner className="h-8 w-8 animate-spin text-muted-foreground" />
+        <div className="flex flex-col items-center justify-center py-12">
+          <Spinner className="h-8 w-8 animate-spin text-goldenYellow-400" />
+          <p className="text-sm text-slate-500 mt-2">Loading audit logs...</p>
         </div>
       ) : logs.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-12 border rounded-md">
-          <Scroll className="h-12 w-12 text-muted-foreground mb-4" />
-          <p className="text-lg font-medium">No audit logs found</p>
-          <p className="text-muted-foreground">Try adjusting your filters.</p>
+        <div className="flex flex-col items-center justify-center py-16 text-center border border-slate-800 rounded-xl bg-slate-900">
+          <div className="w-16 h-16 rounded-2xl bg-slate-800/80 border border-slate-700 flex items-center justify-center mx-auto mb-5">
+            <Scroll className="h-8 w-8 text-slate-500" />
+          </div>
+          <p className="text-base font-semibold text-white mb-1">No audit logs found</p>
+          <p className="text-sm text-slate-400 max-w-xs">Try adjusting your filters.</p>
         </div>
       ) : (
         <>
-          <div className="rounded-md border overflow-x-auto">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b bg-muted/50">
+                <tr className="border-b border-slate-800 bg-slate-800/50">
                   <th className="h-12 w-8 px-2" />
-                  <th className="h-12 px-4 text-left font-medium">Timestamp</th>
-                  <th className="h-12 px-4 text-left font-medium">User</th>
-                  <th className="h-12 px-4 text-left font-medium">Action</th>
-                  <th className="h-12 px-4 text-left font-medium">Resource</th>
-                  <th className="h-12 px-4 text-left font-medium">Severity</th>
-                  <th className="h-12 px-4 text-left font-medium">IP Address</th>
+                  <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Timestamp</th>
+                  <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">User</th>
+                  <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Action</th>
+                  <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Resource</th>
+                  <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Severity</th>
+                  <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">IP Address</th>
                 </tr>
               </thead>
               <tbody>
@@ -210,24 +211,24 @@ function LogRow({
   return (
     <>
       <tr
-        className="border-b hover:bg-muted/25 transition-colors cursor-pointer"
+        className="border-b border-slate-800 hover:bg-slate-800/50 transition-colors duration-100 cursor-pointer"
         onClick={hasDetails ? onToggle : undefined}
       >
-        <td className="px-2 text-muted-foreground">
+        <td className="px-2 text-slate-500">
           {hasDetails && (
             expanded ? <CaretDown className="h-4 w-4" /> : <CaretRight className="h-4 w-4" />
           )}
         </td>
-        <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">
+        <td className="px-4 py-3 text-slate-400 whitespace-nowrap">
           {format(new Date(log.createdAt), "MMM d, yyyy HH:mm:ss")}
         </td>
-        <td className="px-4 py-3">
-          {log.userId ? log.userId.email : <span className="text-muted-foreground">System</span>}
+        <td className="px-4 py-3 text-slate-200">
+          {log.userId ? log.userId.email : <span className="text-slate-500">System</span>}
         </td>
-        <td className="px-4 py-3 font-mono text-xs">
+        <td className="px-4 py-3 font-mono text-xs text-slate-300">
           {log.action}
         </td>
-        <td className="px-4 py-3 text-muted-foreground">
+        <td className="px-4 py-3 text-slate-400">
           {log.resource || "—"}
           {log.resourceId && (
             <span className="ml-1 font-mono text-xs">({log.resourceId.slice(0, 8)}...)</span>
@@ -238,20 +239,20 @@ function LogRow({
             {log.severity}
           </Badge>
         </td>
-        <td className="px-4 py-3 text-muted-foreground font-mono text-xs">
+        <td className="px-4 py-3 text-slate-500 font-mono text-xs">
           {log.ipAddress || "—"}
         </td>
       </tr>
       {expanded && hasDetails && (
-        <tr className="border-b bg-muted/10">
+        <tr className="border-b border-slate-800 bg-slate-800/20">
           <td />
           <td colSpan={6} className="px-4 py-3">
             <div className="text-xs space-y-1">
-              <p className="font-medium text-muted-foreground mb-2">Details</p>
+              <p className="font-medium text-slate-500 mb-2">Details</p>
               {Object.entries(log.details!).map(([key, value]) => (
                 <div key={key} className="flex gap-2">
-                  <span className="font-mono text-muted-foreground">{key}:</span>
-                  <span className="font-mono">{String(value)}</span>
+                  <span className="font-mono text-slate-500">{key}:</span>
+                  <span className="font-mono text-slate-300">{String(value)}</span>
                 </div>
               ))}
             </div>

@@ -68,15 +68,16 @@ export default function BillingPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Billing Overview</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-xl font-bold text-white tracking-tight">Billing Overview</h1>
+        <p className="text-sm text-slate-400 mt-0.5">
           Subscription status across all university tenants
         </p>
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-16">
-          <Spinner className="h-8 w-8 animate-spin text-muted-foreground" />
+        <div className="flex flex-col items-center justify-center py-16">
+          <Spinner className="h-8 w-8 animate-spin text-goldenYellow-400" />
+          <p className="text-sm text-slate-500 mt-2">Loading billing data...</p>
         </div>
       ) : (
         <>
@@ -105,14 +106,14 @@ export default function BillingPage() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b bg-muted/50">
-                        <th className="h-10 px-4 text-left font-medium">University</th>
-                        <th className="h-10 px-4 text-left font-medium">Plan</th>
-                        <th className="h-10 px-4 text-left font-medium">Amount</th>
-                        <th className="h-10 px-4 text-left font-medium">Cycle</th>
-                        <th className="h-10 px-4 text-left font-medium">End Date</th>
-                        <th className="h-10 px-4 text-left font-medium">Status</th>
-                        <th className="h-10 px-4 text-left font-medium"></th>
+                      <tr className="border-b border-slate-800 bg-slate-800/50">
+                        <th className="h-10 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">University</th>
+                        <th className="h-10 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Plan</th>
+                        <th className="h-10 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Amount</th>
+                        <th className="h-10 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Cycle</th>
+                        <th className="h-10 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">End Date</th>
+                        <th className="h-10 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Status</th>
+                        <th className="h-10 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -137,7 +138,7 @@ function TenantBillingRow({ item }: { item: BillingOverviewItem }) {
   const endDate = sub.endDate ? new Date(sub.endDate) : null;
 
   return (
-    <tr className="border-b hover:bg-muted/25 transition-colors">
+    <tr className="border-b border-slate-800 hover:bg-slate-800/50 transition-colors duration-100">
       <td className="px-4 py-3">
         <div className="flex items-center gap-2">
           <Buildings className="h-4 w-4 text-muted-foreground shrink-0" />

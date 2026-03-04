@@ -149,10 +149,10 @@ export function TenantDomainsTab({ tenant }: { tenant: Tenant }) {
                   <div className="rounded-md border overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="border-b bg-muted/50">
-                          <th className="h-8 px-3 text-left font-medium">Type</th>
-                          <th className="h-8 px-3 text-left font-medium">Name</th>
-                          <th className="h-8 px-3 text-left font-medium">Value</th>
+                        <tr className="border-b border-slate-800 bg-slate-800/50">
+                          <th className="h-8 px-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Type</th>
+                          <th className="h-8 px-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Name</th>
+                          <th className="h-8 px-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Value</th>
                         </tr>
                       </thead>
                       <tbody>

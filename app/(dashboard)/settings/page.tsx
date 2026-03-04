@@ -4,14 +4,16 @@ import { useState, useEffect } from "react";
 import { useCurrentUser, useAuthStore } from "@/stores/authStore";
 import { authApi } from "@/lib/api/auth-api";
 import { useGlobalEnv, useUpdateGlobalEnv } from "@/hooks/use-global-config";
+import { useDeploymentNotifications, useUpdateDeploymentNotifications } from "@/hooks/use-deployment-notifications";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Spinner, ShieldCheck, Key, Plus, Trash, Globe, FloppyDisk } from "@phosphor-icons/react";
+import { Spinner, ShieldCheck, Key, Plus, Trash, Globe, FloppyDisk, Bell, X } from "@phosphor-icons/react";
 
 export default function SettingsPage() {
   const user = useCurrentUser();
@@ -76,8 +78,8 @@ export default function SettingsPage() {
   return (
     <div className="max-w-3xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Settings</h1>
-        <p className="text-muted-foreground">Manage your account settings</p>
+        <h1 className="text-xl font-bold text-white tracking-tight">Settings</h1>
+        <p className="text-sm text-slate-400 mt-0.5">Manage your account settings</p>
       </div>
 
       <Card>
@@ -174,8 +176,214 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
+      {isSuperadmin && <DeploymentNotificationsSection />}
       {isSuperadmin && <GlobalEnvSection />}
     </div>
+  );
+}
+
+const ALL_STATUSES = ["FAILURE", "TIMEOUT", "INTERNAL_ERROR", "SUCCESS"] as const;
+
+function DeploymentNotificationsSection() {
+  const { data, isLoading } = useDeploymentNotifications();
+  const updateConfig = useUpdateDeploymentNotifications();
+  const [enabled, setEnabled] = useState(true);
+  const [recipients, setRecipients] = useState<string[]>([]);
+  const [notifyOn, setNotifyOn] = useState<string[]>([]);
+  const [fromEmail, setFromEmail] = useState("");
+  const [fromName, setFromName] = useState("");
+  const [newRecipient, setNewRecipient] = useState("");
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    if (data && !initialized) {
+      setEnabled(data.enabled);
+      setRecipients(data.recipients || []);
+      setNotifyOn(data.notifyOn || []);
+      setFromEmail(data.fromEmail || "");
+      setFromName(data.fromName || "");
+      setInitialized(true);
+    }
+  }, [data, initialized]);
+
+  const addRecipient = () => {
+    const email = newRecipient.trim().toLowerCase();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast.error("Enter a valid email address");
+      return;
+    }
+    if (recipients.includes(email)) {
+      toast.error("Email already added");
+      return;
+    }
+    setRecipients((prev) => [...prev, email]);
+    setNewRecipient("");
+  };
+
+  const removeRecipient = (email: string) => {
+    setRecipients((prev) => prev.filter((r) => r !== email));
+  };
+
+  const toggleStatus = (status: string) => {
+    setNotifyOn((prev) =>
+      prev.includes(status)
+        ? prev.filter((s) => s !== status)
+        : [...prev, status]
+    );
+  };
+
+  const handleSave = async () => {
+    if (recipients.length === 0) {
+      toast.error("Add at least one recipient");
+      return;
+    }
+    if (notifyOn.length === 0) {
+      toast.error("Select at least one status to notify on");
+      return;
+    }
+    try {
+      await updateConfig.mutateAsync({
+        enabled,
+        recipients,
+        notifyOn,
+        fromEmail: fromEmail.trim(),
+        fromName: fromName.trim(),
+      });
+      toast.success("Deployment notification settings saved");
+    } catch (err: any) {
+      toast.error("Failed to save", {
+        description: err.data?.message || err.message,
+      });
+    }
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <Bell className="h-5 w-5" />
+              Deployment Notifications
+            </CardTitle>
+            <CardDescription>
+              Configure email alerts for CI/CD build events
+            </CardDescription>
+          </div>
+          <div className="flex items-center gap-2">
+            <Label htmlFor="deploy-notify-toggle" className="text-sm text-muted-foreground">
+              {enabled ? "Enabled" : "Disabled"}
+            </Label>
+            <Switch
+              id="deploy-notify-toggle"
+              checked={enabled}
+              onCheckedChange={setEnabled}
+            />
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-5">
+        {isLoading ? (
+          <div className="flex justify-center py-4">
+            <Spinner className="h-6 w-6 animate-spin text-muted-foreground" />
+          </div>
+        ) : (
+          <>
+            <div className="space-y-2">
+              <Label>Notify On</Label>
+              <p className="text-xs text-muted-foreground">Select which build statuses trigger an email</p>
+              <div className="flex flex-wrap gap-2">
+                {ALL_STATUSES.map((status) => (
+                  <Badge
+                    key={status}
+                    variant={notifyOn.includes(status) ? "default" : "outline"}
+                    className="cursor-pointer select-none"
+                    onClick={() => toggleStatus(status)}
+                  >
+                    {status}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+
+            <Separator />
+
+            <div className="space-y-2">
+              <Label>Recipients</Label>
+              <div className="flex gap-2">
+                <Input
+                  type="email"
+                  value={newRecipient}
+                  onChange={(e) => setNewRecipient(e.target.value)}
+                  placeholder="email@example.com"
+                  className="flex-1"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addRecipient();
+                    }
+                  }}
+                />
+                <Button variant="outline" size="sm" onClick={addRecipient}>
+                  <Plus className="h-4 w-4 mr-1" />
+                  Add
+                </Button>
+              </div>
+              {recipients.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {recipients.map((email) => (
+                    <Badge key={email} variant="secondary" className="gap-1 pr-1">
+                      {email}
+                      <button
+                        type="button"
+                        onClick={() => removeRecipient(email)}
+                        className="ml-1 rounded-full hover:bg-slate-600 p-0.5"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <Separator />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>From Email</Label>
+                <Input
+                  value={fromEmail}
+                  onChange={(e) => setFromEmail(e.target.value)}
+                  placeholder="support@versitylife.com"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>From Name</Label>
+                <Input
+                  value={fromName}
+                  onChange={(e) => setFromName(e.target.value)}
+                  placeholder="Versity Life CI/CD"
+                />
+              </div>
+            </div>
+
+            <Separator />
+
+            <div className="flex justify-end">
+              <Button onClick={handleSave} disabled={updateConfig.isPending}>
+                {updateConfig.isPending ? (
+                  <Spinner className="h-4 w-4 animate-spin mr-2" />
+                ) : (
+                  <FloppyDisk className="h-4 w-4 mr-2" />
+                )}
+                Save Notification Settings
+              </Button>
+            </div>
+          </>
+        )}
+      </CardContent>
+    </Card>
   );
 }
 

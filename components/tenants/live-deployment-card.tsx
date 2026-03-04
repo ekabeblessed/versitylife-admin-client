@@ -6,15 +6,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  CheckCircle2,
+  CheckCircle,
   XCircle,
-  Loader2,
+  Spinner,
   Rocket,
-  Activity,
-  RotateCcw,
+  Waveform,
+  ArrowClockwise,
   X,
   Clock,
-} from "lucide-react";
+} from "@phosphor-icons/react";
 import type { Deployment } from "@/types/deployment";
 
 const ACTIVE_STATUSES = ["pending", "deploying", "health_checking", "routing"] as const;
@@ -106,10 +106,10 @@ export function LiveDeploymentCard({ tenantId, onDismiss }: LiveDeploymentCardPr
 
   if (!deployment) {
     return (
-      <Card className="border-blue-200 bg-blue-50 dark:bg-blue-950/20 dark:border-blue-800">
+      <Card className="border-blue-500/30 bg-blue-500/10">
         <CardContent className="py-4 flex items-center gap-3">
-          <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
-          <span className="text-sm text-blue-800 dark:text-blue-300">Initiating deployment…</span>
+          <Spinner className="h-4 w-4 animate-spin text-blue-400" />
+          <span className="text-sm text-blue-300">Initiating deployment…</span>
         </CardContent>
       </Card>
     );
@@ -118,10 +118,10 @@ export function LiveDeploymentCard({ tenantId, onDismiss }: LiveDeploymentCardPr
   const currentStepIndex = getStepIndex(status);
 
   const borderColor = isFailed
-    ? "border-red-300 bg-red-50 dark:bg-red-950/20 dark:border-red-800"
+    ? "border-red-500/30 bg-red-500/10"
     : isDone
-    ? "border-green-300 bg-green-50 dark:bg-green-950/20 dark:border-green-800"
-    : "border-blue-300 bg-blue-50 dark:bg-blue-950/20 dark:border-blue-800";
+    ? "border-emerald-500/30 bg-emerald-500/10"
+    : "border-blue-500/30 bg-blue-500/10";
 
   const totalDuration = (() => {
     const start = deployment.timing.startedAt;
@@ -131,27 +131,27 @@ export function LiveDeploymentCard({ tenantId, onDismiss }: LiveDeploymentCardPr
   })();
 
   return (
-    <Card className={`${borderColor} transition-all`}>
+    <Card className={`${borderColor} transition-all border`}>
       <CardContent className="py-4 space-y-4">
         {/* Header row */}
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             {isFailed ? (
-              <XCircle className="h-5 w-5 text-red-600 shrink-0" />
+              <XCircle weight="fill" className="h-5 w-5 text-red-400 shrink-0" />
             ) : isDone ? (
-              <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0" />
+              <CheckCircle weight="fill" className="h-5 w-5 text-emerald-400 shrink-0" />
             ) : (
-              <Loader2 className="h-5 w-5 animate-spin text-blue-600 shrink-0" />
+              <Spinner className="h-5 w-5 animate-spin text-blue-400 shrink-0" />
             )}
             <div>
-              <p className="text-sm font-semibold">
+              <p className="text-sm font-semibold text-white">
                 {isFailed
                   ? "Deployment failed"
                   : isDone
                   ? "Deployment completed"
                   : "Deployment in progress…"}
               </p>
-              <p className="text-xs text-muted-foreground capitalize">
+              <p className="text-xs text-slate-400 capitalize">
                 {deployment.type.replace("_", " ")} · triggered by{" "}
                 {deployment.triggeredBy
                   ? `${deployment.triggeredBy.firstName} ${deployment.triggeredBy.lastName}`
@@ -162,22 +162,22 @@ export function LiveDeploymentCard({ tenantId, onDismiss }: LiveDeploymentCardPr
 
           <div className="flex items-center gap-3 shrink-0">
             {isActive && (
-              <div className="flex items-center gap-1 text-xs text-blue-700 dark:text-blue-300">
+              <div className="flex items-center gap-1 text-xs text-blue-400">
                 <Clock className="h-3 w-3" />
                 {formatMs(elapsed)}
               </div>
             )}
             {!isActive && totalDuration && (
-              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+              <div className="flex items-center gap-1 text-xs text-slate-400">
                 <Clock className="h-3 w-3" />
                 {formatMs(totalDuration)}
               </div>
             )}
             {autoDismissing && (
-              <span className="text-xs text-muted-foreground">Closing…</span>
+              <span className="text-xs text-slate-400">Closing…</span>
             )}
-            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={onDismiss}>
-              <X className="h-3 w-3" />
+            <Button variant="ghost" size="icon" className="h-6 w-6 text-slate-400 hover:text-white" onClick={onDismiss}>
+              <X weight="bold" className="h-3 w-3" />
             </Button>
           </div>
         </div>
@@ -199,31 +199,31 @@ export function LiveDeploymentCard({ tenantId, onDismiss }: LiveDeploymentCardPr
                       failed
                         ? "bg-red-500"
                         : done
-                        ? "bg-green-500"
+                        ? "bg-emerald-500"
                         : current
-                        ? "bg-blue-500 ring-2 ring-blue-300 ring-offset-1"
-                        : "bg-muted border border-border"
+                        ? "bg-blue-500 ring-2 ring-blue-400/50"
+                        : "bg-slate-800 border border-slate-700"
                     }`}
                   >
                     {failed ? (
-                      <XCircle className="h-4 w-4 text-white" />
+                      <XCircle weight="fill" className="h-4 w-4 text-white" />
                     ) : done ? (
-                      <CheckCircle2 className="h-4 w-4 text-white" />
+                      <CheckCircle weight="fill" className="h-4 w-4 text-white" />
                     ) : current ? (
-                      <Loader2 className="h-3.5 w-3.5 text-white animate-spin" />
+                      <Spinner className="h-3.5 w-3.5 text-white animate-spin" />
                     ) : (
-                      <span className="text-[10px] font-bold text-muted-foreground">{i + 1}</span>
+                      <span className="text-[10px] font-bold text-slate-500">{i + 1}</span>
                     )}
                   </div>
                   <span
                     className={`text-[10px] font-medium whitespace-nowrap ${
                       failed
-                        ? "text-red-600"
+                        ? "text-red-400"
                         : done
-                        ? "text-green-600"
+                        ? "text-emerald-400"
                         : current
-                        ? "text-blue-600"
-                        : "text-muted-foreground"
+                        ? "text-blue-400"
+                        : "text-slate-500"
                     }`}
                   >
                     {step.label}
@@ -234,7 +234,7 @@ export function LiveDeploymentCard({ tenantId, onDismiss }: LiveDeploymentCardPr
                 {i < STEPS.length - 1 && (
                   <div
                     className={`h-[2px] flex-1 mx-1 transition-all ${
-                      currentStepIndex > i || isDone ? "bg-green-400" : "bg-border"
+                      currentStepIndex > i || isDone ? "bg-emerald-400" : "bg-slate-700"
                     }`}
                   />
                 )}
@@ -244,9 +244,9 @@ export function LiveDeploymentCard({ tenantId, onDismiss }: LiveDeploymentCardPr
         </div>
 
         {/* Status description */}
-        <div className="text-xs text-muted-foreground">
+        <div className="text-xs text-slate-400">
           {isFailed && deployment.error ? (
-            <div className="rounded-md border border-red-200 bg-red-100 dark:bg-red-950/30 px-3 py-2 text-red-700 dark:text-red-400">
+            <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-red-300">
               <span className="font-medium">Error at step &quot;{deployment.error.step}&quot;:</span>{" "}
               {deployment.error.message}
             </div>
@@ -255,7 +255,7 @@ export function LiveDeploymentCard({ tenantId, onDismiss }: LiveDeploymentCardPr
               {deployment.revisionName && (
                 <span>
                   Revision:{" "}
-                  <code className="font-mono text-[11px]">{deployment.revisionName}</code>
+                  <code className="font-mono text-[11px] text-slate-300">{deployment.revisionName}</code>
                 </span>
               )}
               {deployment.healthCheck && (

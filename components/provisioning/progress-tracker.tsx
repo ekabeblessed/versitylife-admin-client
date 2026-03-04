@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import {
-  CheckCircle2, XCircle, Loader2, Circle, RotateCcw, Clock,
-} from "lucide-react";
+  CheckCircle, XCircle, Spinner, Circle, ArrowClockwise, Clock,
+} from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
 const STEP_LABELS: Record<string, string> = {
@@ -24,9 +24,9 @@ const STEP_LABELS: Record<string, string> = {
 const stepStatusIcon = (status: string) => {
   switch (status) {
     case "completed":
-      return <CheckCircle2 className="h-5 w-5 text-green-500" />;
+      return <CheckCircle className="h-5 w-5 text-green-500" />;
     case "in_progress":
-      return <Loader2 className="h-5 w-5 text-blue-500 animate-spin" />;
+      return <Spinner className="h-5 w-5 text-blue-500 animate-spin" />;
     case "failed":
       return <XCircle className="h-5 w-5 text-red-500" />;
     case "skipped":
@@ -56,7 +56,7 @@ export function ProvisioningProgress({ jobId }: { jobId: string }) {
     return (
       <Card>
         <CardContent className="flex items-center justify-center py-12">
-          <Loader2 className="h-6 w-6 animate-spin" />
+          <Spinner className="h-6 w-6 animate-spin" />
         </CardContent>
       </Card>
     );
@@ -101,7 +101,7 @@ export function ProvisioningProgress({ jobId }: { jobId: string }) {
           </Badge>
           {job.status === "failed" && (
             <Button size="sm" variant="outline" onClick={handleRetry} disabled={retryMutation.isPending}>
-              <RotateCcw className="h-3 w-3 mr-1" />
+              <ArrowClockwise className="h-3 w-3 mr-1" />
               Retry
             </Button>
           )}

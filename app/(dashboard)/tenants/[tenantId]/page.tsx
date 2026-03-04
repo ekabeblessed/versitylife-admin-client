@@ -22,10 +22,11 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
+import { DeleteTenantDialog } from "@/components/tenants/delete-tenant-dialog";
 import {
   CaretLeft, Spinner, ArrowSquareOut, Rocket, ArrowClockwise,
   Globe, HardDrives, Clock, Waveform, Gauge, Flask, CreditCard,
-  Heartbeat, Buildings, Robot,
+  Heartbeat, Buildings, Robot, Trash,
 } from "@phosphor-icons/react";
 import Link from "next/link";
 import { formatDistanceToNow, format } from "date-fns";
@@ -211,6 +212,7 @@ export default function TenantDetailPage({
   const isSuperadmin = currentUser?.role === "platform_superadmin";
 
   const [showLiveCard, setShowLiveCard] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const { data: tenantData, isLoading } = useTenant(tenantId);
   const { data: deploymentsData } = useDeployments({
@@ -317,7 +319,7 @@ export default function TenantDetailPage({
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
-          {tenant.deployment.serviceUrl && (
+          {tenant.deployment.serviceUrl && tenant.status !== "deleted" && (
             <Button variant="outline" asChild className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white">
               <a href={tenant.deployment.serviceUrl} target="_blank" rel="noopener noreferrer">
                 <ArrowSquareOut className="h-4 w-4 mr-2" />
@@ -336,6 +338,16 @@ export default function TenantDetailPage({
                 Deploy
               </Button>
             </>
+          )}
+          {isSuperadmin && tenant.status !== "deleted" && tenant.status !== "provisioning" && (
+            <Button
+              variant="outline"
+              onClick={() => setShowDeleteDialog(true)}
+              className="border-red-500/30 text-red-400 hover:bg-red-500/10 hover:text-red-300"
+            >
+              <Trash className="h-4 w-4 mr-2" />
+              Delete Deployment
+            </Button>
           )}
         </div>
       </div>
@@ -540,6 +552,15 @@ export default function TenantDetailPage({
           </TabsContent>
         )}
       </Tabs>
+
+      {isSuperadmin && (
+        <DeleteTenantDialog
+          open={showDeleteDialog}
+          onOpenChange={setShowDeleteDialog}
+          tenantId={tenantId}
+          universityName={tenant.university.name}
+        />
+      )}
     </div>
   );
 }

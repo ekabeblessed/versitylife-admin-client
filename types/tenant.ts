@@ -4,7 +4,7 @@ export interface Tenant {
   serviceName?: string;
   enabled: boolean;
   isStaging?: boolean;
-  status: "provisioning" | "active" | "inactive" | "error";
+  status: "provisioning" | "active" | "inactive" | "error" | "deleted";
   university: {
     name: string;
     fullName: string;

@@ -82,10 +82,8 @@ export default function UsersPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Platform Users</h1>
-          <p className="text-muted-foreground">
-            Manage users who can access this admin panel
-          </p>
+          <h1 className="text-xl font-bold text-white tracking-tight">Platform Users</h1>
+          <p className="text-sm text-slate-400 mt-0.5">Manage users who can access this admin panel</p>
         </div>
         {isSuperadmin && (
           <Button onClick={() => setShowCreate(true)}>
@@ -113,36 +111,37 @@ export default function UsersPage() {
           </div>
 
           {isLoading ? (
-            <div className="flex items-center justify-center py-12">
-              <Spinner className="h-8 w-8 animate-spin text-muted-foreground" />
+            <div className="flex flex-col items-center justify-center py-12">
+              <Spinner className="h-8 w-8 animate-spin text-goldenYellow-400" />
+              <p className="text-sm text-slate-500 mt-2">Loading users...</p>
             </div>
           ) : users.length === 0 ? (
-            <Card>
-              <CardContent className="flex flex-col items-center justify-center py-12">
-                <Users className="h-12 w-12 text-muted-foreground mb-4" />
-                <p className="text-lg font-medium">No users found</p>
-              </CardContent>
-            </Card>
+            <div className="flex flex-col items-center justify-center py-16 text-center border border-slate-800 rounded-xl bg-slate-900">
+              <div className="w-16 h-16 rounded-2xl bg-slate-800/80 border border-slate-700 flex items-center justify-center mx-auto mb-5">
+                <Users className="h-8 w-8 text-slate-500" />
+              </div>
+              <p className="text-base font-semibold text-white mb-1">No users found</p>
+            </div>
           ) : (
-            <div className="rounded-md border overflow-x-auto">
+            <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b bg-muted/50">
-                    <th className="h-12 px-4 text-left font-medium">Name</th>
-                    <th className="h-12 px-4 text-left font-medium">Email</th>
-                    <th className="h-12 px-4 text-left font-medium">Role</th>
-                    <th className="h-12 px-4 text-left font-medium">Status</th>
-                    <th className="h-12 px-4 text-left font-medium">2FA</th>
-                    <th className="h-12 px-4 text-left font-medium">Last Login</th>
+                  <tr className="border-b border-slate-800 bg-slate-800/50">
+                    <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Name</th>
+                    <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Email</th>
+                    <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Role</th>
+                    <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Status</th>
+                    <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">2FA</th>
+                    <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Last Login</th>
                   </tr>
                 </thead>
                 <tbody>
                   {users.map((user) => (
-                    <tr key={user._id} className="border-b hover:bg-muted/25">
-                      <td className="px-4 py-3 font-medium">
+                    <tr key={user._id} className="border-b border-slate-800 hover:bg-slate-800/50 transition-colors duration-100">
+                      <td className="px-4 py-3 font-medium text-white">
                         {user.firstName} {user.lastName}
                       </td>
-                      <td className="px-4 py-3 text-muted-foreground">{user.email}</td>
+                      <td className="px-4 py-3 text-slate-400">{user.email}</td>
                       <td className="px-4 py-3">
                         <Badge variant={roleColors[user.role] || "secondary"}>
                           {user.role.replace(/platform_/g, "").replace(/_/g, " ")}
@@ -160,7 +159,7 @@ export default function UsersPage() {
                           <Badge variant="secondary">Off</Badge>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-muted-foreground">
+                      <td className="px-4 py-3 text-slate-400">
                         {user.lastLogin ? format(new Date(user.lastLogin), "PPp") : "Never"}
                       </td>
                     </tr>
@@ -174,37 +173,38 @@ export default function UsersPage() {
         {isSuperadmin && (
           <TabsContent value="activity" className="space-y-4">
             {activityLoading ? (
-              <div className="flex items-center justify-center py-12">
-                <Spinner className="h-8 w-8 animate-spin text-muted-foreground" />
+              <div className="flex flex-col items-center justify-center py-12">
+                <Spinner className="h-8 w-8 animate-spin text-goldenYellow-400" />
+                <p className="text-sm text-slate-500 mt-2">Loading activity...</p>
               </div>
             ) : activityUsers.length === 0 ? (
-              <Card>
-                <CardContent className="flex flex-col items-center justify-center py-12">
-                  <Users className="h-12 w-12 text-muted-foreground mb-4" />
-                  <p className="text-lg font-medium">No activity data</p>
-                </CardContent>
-              </Card>
+              <div className="flex flex-col items-center justify-center py-16 text-center border border-slate-800 rounded-xl bg-slate-900">
+                <div className="w-16 h-16 rounded-2xl bg-slate-800/80 border border-slate-700 flex items-center justify-center mx-auto mb-5">
+                  <Users className="h-8 w-8 text-slate-500" />
+                </div>
+                <p className="text-base font-semibold text-white mb-1">No activity data</p>
+              </div>
             ) : (
-              <div className="rounded-md border overflow-x-auto">
+              <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b bg-muted/50">
-                      <th className="h-12 px-4 text-left font-medium">Name</th>
-                      <th className="h-12 px-4 text-left font-medium">Email</th>
-                      <th className="h-12 px-4 text-left font-medium">Role</th>
-                      <th className="h-12 px-4 text-left font-medium">Status</th>
-                      <th className="h-12 px-4 text-left font-medium">Last Login</th>
-                      <th className="h-12 px-4 text-left font-medium">Last Activity</th>
-                      <th className="h-12 px-4 text-left font-medium">Actions</th>
+                    <tr className="border-b border-slate-800 bg-slate-800/50">
+                      <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Name</th>
+                      <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Email</th>
+                      <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Role</th>
+                      <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Status</th>
+                      <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Last Login</th>
+                      <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Last Activity</th>
+                      <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {activityUsers.map((user) => (
-                      <tr key={user._id} className="border-b hover:bg-muted/25">
-                        <td className="px-4 py-3 font-medium">
+                      <tr key={user._id} className="border-b border-slate-800 hover:bg-slate-800/50 transition-colors duration-100">
+                        <td className="px-4 py-3 font-medium text-white">
                           {user.firstName} {user.lastName}
                         </td>
-                        <td className="px-4 py-3 text-muted-foreground">{user.email}</td>
+                        <td className="px-4 py-3 text-slate-400">{user.email}</td>
                         <td className="px-4 py-3">
                           <Badge variant={roleColors[user.role] || "secondary"}>
                             {user.role.replace(/platform_/g, "").replace(/_/g, " ")}
@@ -215,12 +215,12 @@ export default function UsersPage() {
                             {user.status}
                           </Badge>
                         </td>
-                        <td className="px-4 py-3 text-muted-foreground">
+                        <td className="px-4 py-3 text-slate-400">
                           {user.lastLogin
                             ? formatDistanceToNow(new Date(user.lastLogin), { addSuffix: true })
                             : "Never"}
                         </td>
-                        <td className="px-4 py-3 text-muted-foreground">
+                        <td className="px-4 py-3 text-slate-400">
                           {user.lastActivity
                             ? formatDistanceToNow(new Date(user.lastActivity), { addSuffix: true })
                             : "Never"}

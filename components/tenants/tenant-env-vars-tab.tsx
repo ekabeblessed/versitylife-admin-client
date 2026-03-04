@@ -229,10 +229,10 @@ export function TenantEnvVarsTab({ tenant }: { tenant: Tenant }) {
                   <div className="rounded-md border overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="border-b bg-muted/50">
-                          <th className="h-8 px-3 text-left font-medium w-[280px]">Key</th>
-                          <th className="h-8 px-3 text-left font-medium">Value</th>
-                          <th className="h-8 px-3 text-right font-medium w-[80px]">Action</th>
+                        <tr className="border-b border-slate-800 bg-slate-800/50">
+                          <th className="h-8 px-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 w-[280px]">Key</th>
+                          <th className="h-8 px-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Value</th>
+                          <th className="h-8 px-3 text-right text-[11px] font-semibold uppercase tracking-wider text-slate-500 w-[80px]">Action</th>
                         </tr>
                       </thead>
                       <tbody>

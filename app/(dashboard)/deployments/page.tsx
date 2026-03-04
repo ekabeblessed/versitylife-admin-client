@@ -77,10 +77,8 @@ export default function DeploymentsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Deployments</h1>
-        <p className="text-muted-foreground">
-          View all deployments across tenants
-        </p>
+        <h1 className="text-xl font-bold text-white tracking-tight">Deployments</h1>
+        <p className="text-sm text-slate-400 mt-0.5">View all deployments across tenants</p>
       </div>
 
       <div className="flex gap-4 flex-wrap">
@@ -146,62 +144,63 @@ export default function DeploymentsPage() {
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-12">
-          <Spinner className="h-8 w-8 animate-spin text-muted-foreground" />
+        <div className="flex flex-col items-center justify-center py-12">
+          <Spinner className="h-8 w-8 animate-spin text-goldenYellow-400" />
+          <p className="text-sm text-slate-500 mt-2">Loading deployments...</p>
         </div>
       ) : displayDeployments.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <Rocket className="h-12 w-12 text-muted-foreground mb-4" />
-            <p className="text-lg font-medium">No deployments found</p>
-            <p className="text-muted-foreground">Deployments will appear here when triggered.</p>
-          </CardContent>
-        </Card>
+        <div className="flex flex-col items-center justify-center py-16 text-center border border-slate-800 rounded-xl bg-slate-900">
+          <div className="w-16 h-16 rounded-2xl bg-slate-800/80 border border-slate-700 flex items-center justify-center mx-auto mb-5">
+            <Rocket className="h-8 w-8 text-slate-500" />
+          </div>
+          <p className="text-base font-semibold text-white mb-1">No deployments found</p>
+          <p className="text-sm text-slate-400 max-w-xs">Deployments will appear here when triggered.</p>
+        </div>
       ) : (
         <>
-          <div className="rounded-md border overflow-x-auto">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b bg-muted/50">
-                  <th className="h-12 px-4 text-left font-medium">Date</th>
-                  <th className="h-12 px-4 text-left font-medium">Tenant</th>
-                  <th className="h-12 px-4 text-left font-medium">Type</th>
-                  <th className="h-12 px-4 text-left font-medium">Status</th>
-                  <th className="h-12 px-4 text-left font-medium">Revision</th>
-                  <th className="h-12 px-4 text-left font-medium">Triggered By</th>
-                  <th className="h-12 px-4 text-left font-medium">Duration</th>
+                <tr className="border-b border-slate-800 bg-slate-800/50">
+                  <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Date</th>
+                  <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Tenant</th>
+                  <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Type</th>
+                  <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Status</th>
+                  <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Revision</th>
+                  <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Triggered By</th>
+                  <th className="h-12 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Duration</th>
                 </tr>
               </thead>
               <tbody>
                 {displayDeployments.map((dep) => (
-                  <tr key={dep._id} className="border-b hover:bg-muted/25 transition-colors">
+                  <tr key={dep._id} className="border-b border-slate-800 hover:bg-slate-800/50 transition-colors duration-100">
                     <td className="px-4 py-3 whitespace-nowrap">
-                      <div>{format(new Date(dep.createdAt), "MMM d, yyyy")}</div>
-                      <div className="text-xs text-muted-foreground">
+                      <div className="text-slate-200">{format(new Date(dep.createdAt), "MMM d, yyyy")}</div>
+                      <div className="text-xs text-slate-500">
                         {format(new Date(dep.createdAt), "HH:mm:ss")}
                       </div>
                     </td>
                     <td className="px-4 py-3">
                       <Link
                         href={`/tenants/${dep.tenantId}`}
-                        className="font-medium hover:underline"
+                        className="font-medium text-white hover:text-goldenYellow-400 transition-colors"
                       >
                         {dep.tenantId}
                       </Link>
                     </td>
-                    <td className="px-4 py-3 capitalize">{dep.type.replace(/_/g, " ")}</td>
+                    <td className="px-4 py-3 capitalize text-slate-300">{dep.type.replace(/_/g, " ")}</td>
                     <td className="px-4 py-3">
                       <StatusBadge status={dep.status} />
                     </td>
-                    <td className="px-4 py-3 font-mono text-xs">
+                    <td className="px-4 py-3 font-mono text-xs text-slate-400">
                       {dep.revisionName || "-"}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 text-slate-300">
                       {dep.triggeredBy
                         ? `${dep.triggeredBy.firstName} ${dep.triggeredBy.lastName}`
                         : "-"}
                     </td>
-                    <td className="px-4 py-3 text-muted-foreground">
+                    <td className="px-4 py-3 text-slate-400">
                       {getDuration(dep)}
                     </td>
                   </tr>

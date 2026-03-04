@@ -9,15 +9,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import {
-  AlertTriangle,
+  Warning,
   Eye,
-  EyeOff,
-  Loader2,
+  EyeSlash,
+  Spinner,
   Rocket,
-  Save,
-  RotateCcw,
-  KeyRound,
-} from "lucide-react";
+  FloppyDisk,
+  ArrowClockwise,
+  ArrowCounterClockwise,
+  Key,
+} from "@phosphor-icons/react";
 import type { Tenant } from "@/types/tenant";
 
 interface TenantSecretsTabProps {
@@ -127,15 +128,15 @@ export function TenantSecretsTab({ tenant }: TenantSecretsTabProps) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <Spinner className="h-8 w-8 animate-spin text-goldenYellow-500" />
       </div>
     );
   }
 
   if (!data) {
     return (
-      <Card>
-        <CardContent className="py-12 text-center text-muted-foreground">
+      <Card className="bg-slate-900 border-slate-800">
+        <CardContent className="py-12 text-center text-slate-400">
           Failed to load secrets. The secret may not exist yet in GCP Secret Manager.
         </CardContent>
       </Card>
@@ -145,23 +146,24 @@ export function TenantSecretsTab({ tenant }: TenantSecretsTabProps) {
   return (
     <div className="space-y-4">
       {/* Warning banner */}
-      <div className="flex items-center gap-2 rounded-md border border-amber-200 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-800 px-4 py-3 text-sm">
-        <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" />
-        <span>
-          Secret changes require a <strong>redeploy</strong> to take effect. Use &ldquo;Save &amp; Deploy&rdquo; to apply immediately.
+      <div className="flex items-center gap-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm">
+        <Warning weight="fill" className="h-5 w-5 text-amber-400 shrink-0" />
+        <span className="text-amber-300">
+          Secret changes require a <strong className="text-amber-200">redeploy</strong> to take effect. Use <span className="text-goldenYellow-400 font-medium">"Save & Deploy"</span> to apply immediately.
         </span>
       </div>
 
       {/* Action bar */}
       {hasEdits && (
         <div className="flex items-center gap-2 justify-end">
-          <Badge variant="secondary">{Object.keys(edits).length} unsaved change{Object.keys(edits).length !== 1 ? "s" : ""}</Badge>
+          <Badge variant="secondary" className="bg-slate-800 text-slate-300">{Object.keys(edits).length} unsaved change{Object.keys(edits).length !== 1 ? "s" : ""}</Badge>
           <Button
             variant="outline"
             size="sm"
             onClick={() => setEdits({})}
+            className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white"
           >
-            <RotateCcw className="h-3 w-3 mr-1" />
+            <ArrowClockwise className="h-3 w-3 mr-1" />
             Discard
           </Button>
           <Button
@@ -169,43 +171,45 @@ export function TenantSecretsTab({ tenant }: TenantSecretsTabProps) {
             size="sm"
             onClick={() => handleSave(false)}
             disabled={updateSecrets.isPending}
+            className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white"
           >
-            <Save className="h-3 w-3 mr-1" />
+            <FloppyDisk className="h-3 w-3 mr-1" />
             Save Only
           </Button>
           <Button
             size="sm"
             onClick={() => handleSave(true)}
             disabled={updateSecrets.isPending || deploy.isPending}
+            className="bg-goldenYellow-500 hover:bg-goldenYellow-600 text-slate-900 font-medium"
           >
             {(updateSecrets.isPending || deploy.isPending) ? (
-              <Loader2 className="h-3 w-3 animate-spin mr-1" />
+              <Spinner className="h-3 w-3 animate-spin mr-1" />
             ) : (
               <Rocket className="h-3 w-3 mr-1" />
             )}
-            Save &amp; Deploy
+            Save & Deploy
           </Button>
         </div>
       )}
 
       {/* Secrets by category */}
       {grouped.map(({ category, items }) => (
-        <Card key={category}>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm flex items-center gap-2">
-              <KeyRound className="h-4 w-4 text-muted-foreground" />
+        <Card key={category} className="bg-slate-900 border-slate-800">
+          <CardHeader className="pb-2 border-b border-slate-800">
+            <CardTitle className="text-sm flex items-center gap-2 text-white">
+              <Key className="h-4 w-4 text-goldenYellow-400" />
               {CATEGORY_LABELS[category]}
-              <Badge variant="secondary" className="text-xs">{items.length}</Badge>
+              <Badge variant="secondary" className="text-xs bg-slate-800 text-slate-400">{items.length}</Badge>
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="rounded-md border">
+          <CardContent className="pt-4">
+            <div className="rounded-lg border border-slate-800 overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b bg-muted/50">
-                    <th className="h-8 px-3 text-left font-medium w-[260px]">Key</th>
-                    <th className="h-8 px-3 text-left font-medium">Value</th>
-                    <th className="h-8 px-3 text-right font-medium w-[100px]">Actions</th>
+                  <tr className="border-b border-slate-800 bg-slate-800/50">
+                    <th className="h-8 px-3 text-left font-medium text-slate-300 w-[260px]">Key</th>
+                    <th className="h-8 px-3 text-left font-medium text-slate-300">Value</th>
+                    <th className="h-8 px-3 text-right font-medium text-slate-300 w-[100px]">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -221,14 +225,14 @@ export function TenantSecretsTab({ tenant }: TenantSecretsTabProps) {
                     return (
                       <tr
                         key={item.key}
-                        className={`border-b last:border-0 ${isEdited ? "bg-blue-50 dark:bg-blue-950/10" : ""}`}
+                        className={`border-b border-slate-800 last:border-0 ${isEdited ? "bg-amber-500/10" : ""}`}
                       >
-                        <td className="px-3 py-2 font-mono text-xs align-middle">
+                        <td className="px-3 py-2 font-mono text-xs text-slate-300 align-middle">
                           {item.key}
                         </td>
                         <td className="px-3 py-2">
                           <Input
-                            className="h-7 text-xs font-mono"
+                            className="h-7 text-xs font-mono bg-slate-800 border-slate-700 text-slate-200"
                             type={isRevealed || isEdited ? "text" : "password"}
                             value={displayValue}
                             onChange={(e) => handleEdit(item.key, e.target.value)}
@@ -240,12 +244,12 @@ export function TenantSecretsTab({ tenant }: TenantSecretsTabProps) {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-7 w-7"
+                              className="h-7 w-7 text-slate-400 hover:text-white"
                               onClick={() => toggleReveal(item.key)}
                               title={isRevealed ? "Hide" : "Reveal masked value"}
                             >
                               {isRevealed ? (
-                                <EyeOff className="h-3 w-3" />
+                                <EyeSlash className="h-3 w-3" />
                               ) : (
                                 <Eye className="h-3 w-3" />
                               )}
@@ -254,11 +258,11 @@ export function TenantSecretsTab({ tenant }: TenantSecretsTabProps) {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-7 w-7"
+                                className="h-7 w-7 text-slate-400 hover:text-white"
                                 onClick={() => handleReset(item.key)}
                                 title="Discard change"
                               >
-                                <RotateCcw className="h-3 w-3" />
+                                <ArrowCounterClockwise className="h-3 w-3" />
                               </Button>
                             )}
                           </div>
@@ -274,8 +278,8 @@ export function TenantSecretsTab({ tenant }: TenantSecretsTabProps) {
       ))}
 
       {grouped.length === 0 && (
-        <Card>
-          <CardContent className="py-12 text-center text-muted-foreground">
+        <Card className="bg-slate-900 border-slate-800">
+          <CardContent className="py-12 text-center text-slate-400">
             No secrets found for this tenant.
           </CardContent>
         </Card>
